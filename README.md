@@ -3,7 +3,7 @@
 ## Install Dependencies
 
 ```
-opam install . --deps-only
+opam install . --deps-only --with-test
 ```
 
 ## Run
