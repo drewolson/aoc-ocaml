@@ -1,0 +1,11 @@
+(library
+  (name year2022_test)
+  (libraries
+    ppx_inline_test
+    ppx_expect
+    year2022)
+  (inline_tests)
+  (preprocess
+    (pps
+     ppx_inline_test
+     ppx_expect)))
