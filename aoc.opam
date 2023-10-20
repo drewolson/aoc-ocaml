@@ -9,9 +9,13 @@ bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.10"}
-  "ppx_inline_test"
-  "ppx_expect"
+  "angstrom"
+  "base"
   "cmdliner"
+  "ppx_expect"
+  "ppx_let"
+  "re"
+  "stdio"
   "odoc" {with-doc}
 ]
 build: [

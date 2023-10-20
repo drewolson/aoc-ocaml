@@ -1,2 +1,9 @@
 (library
-  (name year2023))
+  (name year2023)
+  (libraries
+    base
+    re
+    stdio
+    util)
+  (flags
+    -open Base))

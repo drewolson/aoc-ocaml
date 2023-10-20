@@ -1,4 +1,14 @@
 (library
   (name year2022)
   (libraries
-    util))
+    angstrom
+    base
+    ppx_let
+    re
+    stdio
+    util)
+  (preprocess
+    (pps
+     ppx_let))
+  (flags
+    -open Base))

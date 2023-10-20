@@ -7,7 +7,7 @@ let year =
 let day =
   let open Cmdliner.Arg in
   let doc = "Day to run (1 - 25)" in
-  let days = List.map (fun d -> Int.to_string d, d) (List.init 25 succ) in
+  let days = List.map ~f:(fun d -> Int.to_string d, d) (List.init 25 ~f:Int.succ) in
   required & opt (some & enum days) None & info [ "d"; "day" ] ~docv:"DAY" ~doc
 ;;
 
@@ -30,4 +30,4 @@ let cmd =
   v info aoc_t
 ;;
 
-let () = exit (Cmdliner.Cmd.eval cmd)
+let () = Stdlib.exit (Cmdliner.Cmd.eval cmd)

@@ -19,6 +19,11 @@
   (depends
     ocaml
     dune
-    ppx_inline_test
+
+    angstrom
+    base
+    cmdliner
     ppx_expect
-    cmdliner))
+    ppx_let
+    re
+    stdio))

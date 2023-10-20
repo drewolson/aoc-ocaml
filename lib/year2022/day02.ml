@@ -24,5 +24,5 @@ let score' = function
   | _ -> 0
 ;;
 
-let part1 input = input |> Util.String.lines |> List.map score |> Util.List.sum
-let part2 input = input |> Util.String.lines |> List.map score' |> Util.List.sum
+let part1 input = input |> String.split_lines |> List.map ~f:score |> Util.List.sum_int
+let part2 input = input |> String.split_lines |> List.map ~f:score' |> Util.List.sum_int
