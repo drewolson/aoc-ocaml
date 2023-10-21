@@ -1,3 +1,4 @@
+module P = Util.Parser
 module A = Angstrom
 open A.Let_syntax
 
@@ -8,18 +9,9 @@ type range =
   ; stop : int
   }
 
-let integerP =
-  let%map tokens =
-    A.take_while1 (function
-      | '0' .. '9' -> true
-      | _ -> false)
-  in
-  Int.of_string tokens
-;;
-
 let rangeP =
-  let%map start = integerP <* A.char '-'
-  and stop = integerP in
+  let%map start = P.integerP <* A.char '-'
+  and stop = P.integerP in
   { start; stop }
 ;;
 

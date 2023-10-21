@@ -1,6 +1,11 @@
 (library
   (name util)
   (libraries
-    core)
+    angstrom
+    core
+    ppx_jane)
+  (preprocess
+    (pps
+     ppx_jane))
   (flags
     -open Core))

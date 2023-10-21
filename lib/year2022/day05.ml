@@ -1,3 +1,4 @@
+module P = Util.Parser
 module A = Angstrom
 open A.Let_syntax
 module IntMap = Map.Make (Int)
@@ -19,15 +20,6 @@ let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
   A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
 ;;
 
-let integerP =
-  let%map tokens =
-    A.take_while1 (function
-      | '0' .. '9' -> true
-      | _ -> false)
-  in
-  Int.of_string tokens
-;;
-
 let dropLineP = A.skip_while (fun c -> not (Char.equal c '\n')) <* A.end_of_line
 let ( $> ) p a = p >>| const a
 let ( <$ ) a p = p >>| const a
@@ -38,9 +30,9 @@ let crateLineP = A.sep_by1 (A.char ' ') crateP
 let crateLinesP = A.sep_by1 A.end_of_line crateLineP <* A.end_of_line
 
 let moveP =
-  let%map n = A.string "move " *> integerP
-  and from = A.string " from " *> integerP
-  and to' = A.string " to " *> integerP in
+  let%map n = A.string "move " *> P.integerP
+  and from = A.string " from " *> P.integerP
+  and to' = A.string " to " *> P.integerP in
   { n; from; to' }
 ;;
 
