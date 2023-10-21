@@ -1,33 +1,36 @@
+module Arg = Cmdliner.Arg
+module Cmd = Cmdliner.Cmd
+module Term = Cmdliner.Term
+
+let ( & ), ( $ ) = Arg.(( & )), Cmdliner.Term.(( $ ))
+
 let year =
-  let open Cmdliner.Arg in
   let doc = "Year to run" in
-  value & opt int 2022 & info [ "y"; "year" ] ~docv:"YEAR" ~doc
+  Arg.value & Arg.opt Arg.int 2022 & Arg.info [ "y"; "year" ] ~docv:"YEAR" ~doc
 ;;
 
 let day =
-  let open Cmdliner.Arg in
   let doc = "Day to run (1 - 25)" in
   let days = List.map ~f:(fun d -> Int.to_string d, d) (List.init 25 ~f:Int.succ) in
-  required & opt (some & enum days) None & info [ "d"; "day" ] ~docv:"DAY" ~doc
+  Arg.required
+  & Arg.opt (Arg.some & Arg.enum days) None
+  & Arg.info [ "d"; "day" ] ~docv:"DAY" ~doc
 ;;
 
 let part =
-  let open Cmdliner.Arg in
   let doc = "Part to run (1 or 2)" in
   let parts = [ "1", 1; "2", 2 ] in
-  required & opt (some & enum parts) None & info [ "p"; "part" ] ~docv:"PART" ~doc
+  Arg.required
+  & Arg.opt (Arg.some & Arg.enum parts) None
+  & Arg.info [ "p"; "part" ] ~docv:"PART" ~doc
 ;;
 
-let aoc_t =
-  let open Cmdliner.Term in
-  const Runner.run $ year $ day $ part
-;;
+let aoc_t = Term.const Runner.run $ year $ day $ part
 
 let cmd =
-  let open Cmdliner.Cmd in
   let doc = "Run aoc solution" in
-  let info = info "aoc" ~version:"1.0.0" ~doc in
-  v info aoc_t
+  let info = Cmd.info "aoc" ~version:"1.0.0" ~doc in
+  Cmd.v info aoc_t
 ;;
 
-let () = Stdlib.exit (Cmdliner.Cmd.eval cmd)
+let () = Stdlib.exit (Cmd.eval cmd)
