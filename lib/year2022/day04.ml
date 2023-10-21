@@ -1,5 +1,7 @@
-open Angstrom
+module A = Angstrom
 open Angstrom.Let_syntax
+
+let ( <* ) = Angstrom.(( <* ))
 
 type range =
   { start : int
@@ -8,7 +10,7 @@ type range =
 
 let integerP =
   let%map tokens =
-    take_while1 (function
+    A.take_while1 (function
       | '0' .. '9' -> true
       | _ -> false)
   in
@@ -16,18 +18,18 @@ let integerP =
 ;;
 
 let rangeP =
-  let%map start = integerP <* char '-'
+  let%map start = integerP <* A.char '-'
   and stop = integerP in
   { start; stop }
 ;;
 
 let rangePairP =
-  let%map a = rangeP <* char ','
+  let%map a = rangeP <* A.char ','
   and b = rangeP in
   a, b
 ;;
 
-let rangePairsP = sep_by (char '\n') rangePairP
+let rangePairsP = A.sep_by (A.char '\n') rangePairP
 
 let is_subset a b =
   (a.start <= b.start && a.stop >= b.stop) || (b.start <= a.start && b.stop >= a.stop)
@@ -38,14 +40,16 @@ let is_overlapping a b =
 ;;
 
 let part1 input =
-  parse_string ~consume:Prefix rangePairsP input
+  input
+  |> A.parse_string ~consume:Prefix rangePairsP
   |> Result.ok_or_failwith
   |> List.filter ~f:(fun (a, b) -> is_subset a b)
   |> List.length
 ;;
 
 let part2 input =
-  parse_string ~consume:Prefix rangePairsP input
+  input
+  |> A.parse_string ~consume:Prefix rangePairsP
   |> Result.ok_or_failwith
   |> List.filter ~f:(fun (a, b) -> is_overlapping a b)
   |> List.length
