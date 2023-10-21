@@ -1,6 +1,6 @@
 (library
   (name util)
   (libraries
-    base)
+    core)
   (flags
-    -open Base))
+    -open Core))

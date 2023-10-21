@@ -21,9 +21,8 @@
     dune
 
     angstrom
-    base
+    core
     cmdliner
-    ppx_expect
-    ppx_let
+    ppx_jane
     re
     stdio))

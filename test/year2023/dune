@@ -1,9 +1,9 @@
 (library
   (name year2023_test)
   (libraries
-    ppx_expect
+    ppx_jane
     year2023)
   (inline_tests)
   (preprocess
     (pps
-     ppx_expect)))
+     ppx_jane)))

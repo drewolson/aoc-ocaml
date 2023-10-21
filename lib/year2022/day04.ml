@@ -1,7 +1,7 @@
 module A = Angstrom
-open Angstrom.Let_syntax
+open A.Let_syntax
 
-let ( <* ) = Angstrom.(( <* ))
+let ( <* ) = A.(( <* ))
 
 type range =
   { start : int

@@ -1,9 +1,9 @@
 (library
   (name runner)
   (libraries
-    base
+    core
     stdio
     year2022
     year2023)
   (flags
-    -open Base))
+    -open Core))

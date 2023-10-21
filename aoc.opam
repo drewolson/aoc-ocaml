@@ -10,10 +10,9 @@ depends: [
   "ocaml"
   "dune" {>= "3.10"}
   "angstrom"
-  "base"
+  "core"
   "cmdliner"
-  "ppx_expect"
-  "ppx_let"
+  "ppx_jane"
   "re"
   "stdio"
   "odoc" {with-doc}

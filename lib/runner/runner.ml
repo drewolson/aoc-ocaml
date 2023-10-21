@@ -20,7 +20,7 @@ let run2023 day part input =
 
 let run year day part =
   let path = Printf.sprintf "data/%i/day%02i.txt" year day in
-  let input = In_channel.with_open_bin path In_channel.input_all in
+  let input = In_channel.read_all path in
   match year with
   | 2022 -> run2022 day part input
   | 2023 -> run2023 day part input

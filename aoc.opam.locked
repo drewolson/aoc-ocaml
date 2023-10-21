@@ -9,12 +9,11 @@ homepage: "https://github.com/drewolson/aoc-ocaml"
 bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
   "angstrom" {= "0.15.0"}
-  "base" {= "v0.16.3"}
   "cmdliner" {= "1.2.0"}
+  "core" {= "v0.16.1"}
   "dune" {= "3.10.0"}
   "ocaml" {= "5.1.0"}
-  "ppx_expect" {= "v0.16.0"}
-  "ppx_let" {= "v0.16.0"}
+  "ppx_jane" {= "v0.16.0"}
   "re" {= "1.11.0"}
   "stdio" {= "v0.16.0"}
 ]

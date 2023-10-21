@@ -2,8 +2,8 @@
   (public_name aoc)
   (name main)
   (libraries
-    base
+    core
     cmdliner
     runner)
   (flags
-    -open Base))
+    -open Core))

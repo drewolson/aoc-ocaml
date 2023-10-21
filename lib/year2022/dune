@@ -2,13 +2,13 @@
   (name year2022)
   (libraries
     angstrom
-    base
-    ppx_let
+    core
+    ppx_jane
     re
     stdio
     util)
   (preprocess
     (pps
-     ppx_let))
+     ppx_jane))
   (flags
-    -open Base))
+    -open Core))

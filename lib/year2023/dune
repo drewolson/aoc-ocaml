@@ -1,9 +1,9 @@
 (library
   (name year2023)
   (libraries
-    base
+    core
     re
     stdio
     util)
   (flags
-    -open Base))
+    -open Core))
