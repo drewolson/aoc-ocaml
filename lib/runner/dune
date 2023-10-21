@@ -2,7 +2,6 @@
   (name runner)
   (libraries
     core
-    stdio
     year2022
     year2023)
   (flags

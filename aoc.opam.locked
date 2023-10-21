@@ -15,7 +15,6 @@ depends: [
   "ocaml" {= "5.1.0"}
   "ppx_jane" {= "v0.16.0"}
   "re" {= "1.11.0"}
-  "stdio" {= "v0.16.0"}
 ]
 build: [
   ["dune" "subst"] {dev}

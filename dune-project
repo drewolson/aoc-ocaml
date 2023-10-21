@@ -24,5 +24,4 @@
     core
     cmdliner
     ppx_jane
-    re
-    stdio))
+    re))

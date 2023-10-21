@@ -14,7 +14,6 @@ depends: [
   "cmdliner"
   "ppx_jane"
   "re"
-  "stdio"
   "odoc" {with-doc}
 ]
 build: [
