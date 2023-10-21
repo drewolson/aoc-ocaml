@@ -5,7 +5,6 @@
     core
     ppx_jane
     re
-    stdio
     util)
   (preprocess
     (pps

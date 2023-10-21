@@ -3,7 +3,6 @@
   (libraries
     core
     re
-    stdio
     util)
   (flags
     -open Core))
