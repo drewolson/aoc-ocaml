@@ -3,6 +3,12 @@ module A = Angstrom
 module IntMap = Map.Make (Int)
 open A.Let_syntax
 
+let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
+  A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
+;;
+
+let ( <$ ), ( $> ) = Util.Parser.(( <$ ), ( $> ))
+
 type move =
   { n : int
   ; from : int
@@ -16,13 +22,7 @@ type instructions =
   ; crates : crate list IntMap.t
   }
 
-let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
-  A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
-;;
-
 let dropLineP = A.skip_while (fun c -> not (Char.equal c '\n')) <* A.end_of_line
-let ( $> ) p a = p >>| const a
-let ( <$ ) a p = p >>| const a
 let noCrateP = None <$ A.string "   "
 let yesCrateP = Option.some <$> A.char '[' *> A.any_char <* A.char ']'
 let crateP = noCrateP <|> yesCrateP
