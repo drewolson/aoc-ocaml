@@ -1,3 +1,5 @@
-val integerP : int Angstrom.t
-val ( $> ) : 'a Angstrom.t -> 'b -> 'b Angstrom.t
-val ( <$ ) : 'b -> 'a Angstrom.t -> 'b Angstrom.t
+module A = Angstrom
+
+val integerP : int A.t
+val ( $> ) : 'a A.t -> 'b -> 'b A.t
+val ( <$ ) : 'b -> 'a A.t -> 'b A.t
