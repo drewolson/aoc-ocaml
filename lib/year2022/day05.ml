@@ -42,7 +42,7 @@ let pad_crates crates =
   let max = crates |> List.map ~f:List.length |> Util.List.max_int in
   List.map crates ~f:(fun l ->
     let pad = List.init (max - List.length l) ~f:(const None) in
-    List.append l pad)
+    l @ pad)
 ;;
 
 let to_stacks crates =
@@ -65,9 +65,7 @@ let move_crate f crates { n; from; to' } =
   let source = Map.find_exn crates from in
   let dest = Map.find_exn crates to' in
   let cs, source' = List.split_n source n in
-  crates
-  |> Map.set ~key:from ~data:source'
-  |> Map.set ~key:to' ~data:(List.append (f cs) dest)
+  crates |> Map.set ~key:from ~data:source' |> Map.set ~key:to' ~data:(f cs @ dest)
 ;;
 
 let find_crates f input =
