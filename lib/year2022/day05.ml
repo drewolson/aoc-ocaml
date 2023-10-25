@@ -1,13 +1,7 @@
 module P = Util.Parser
 module A = Angstrom
 module IntMap = Map.Make (Int)
-open A.Let_syntax
-
-let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
-  A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
-;;
-
-let ( <$ ), ( $> ) = Util.Parser.(( <$ ), ( $> ))
+open P.Syntax
 
 type move =
   { n : int

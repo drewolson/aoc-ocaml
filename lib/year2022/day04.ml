@@ -1,8 +1,6 @@
 module P = Util.Parser
 module A = Angstrom
-open A.Let_syntax
-
-let ( <* ) = A.(( <* ))
+open P.Syntax
 
 type range =
   { start : int

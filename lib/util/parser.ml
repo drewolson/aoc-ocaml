@@ -1,8 +1,17 @@
 module A = Angstrom
-open A.Let_syntax
 
-let ( $> ) p a = p >>| const a
-let ( <$ ) a p = p >>| const a
+module Syntax = struct
+  module Let_syntax = A.Let_syntax.Let_syntax
+
+  let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
+    A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
+  ;;
+
+  let ( $> ) p a = p >>| const a
+  let ( <$ ) a p = p >>| const a
+end
+
+open Syntax
 
 let integerP =
   let%map tokens =

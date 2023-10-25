@@ -1,9 +1,6 @@
 module P = Util.Parser
 module A = Angstrom
-open A.Let_syntax
-
-let ( <$ ) = Util.Parser.(( <$ ))
-let ( *> ), ( <* ) = A.(( *> ), ( <* ))
+open P.Syntax
 
 type cmd =
   | Cd of string
