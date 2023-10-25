@@ -3,6 +3,10 @@ module A = Angstrom
 module Syntax = struct
   module Let_syntax = A.Let_syntax.Let_syntax
 
+  let ( let+ ) = A.( let+ )
+  let ( and+ ) = A.( and+ )
+  let ( let* ) = A.( let* )
+
   let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
     A.(( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ))
   ;;

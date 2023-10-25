@@ -5,6 +5,9 @@ module Syntax : sig
     include module type of A.Let_syntax.Let_syntax
   end
 
+  val ( let+ ) : 'a A.t -> ('a -> 'b) -> 'b A.t
+  val ( and+ ) : 'a A.t -> 'b A.t -> ('a * 'b) A.t
+  val ( let* ) : 'a A.t -> ('a -> 'b A.t) -> 'b A.t
   val ( *> ) : 'a A.t -> 'b A.t -> 'b A.t
   val ( <* ) : 'a A.t -> 'b A.t -> 'a A.t
   val ( >>| ) : 'a A.t -> ('a -> 'b) -> 'b A.t
