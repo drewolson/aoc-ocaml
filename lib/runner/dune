@@ -4,5 +4,8 @@
     core
     year2022
     year2023)
+  (preprocess
+    (pps
+     ppx_jane))
   (flags
     -open Core))

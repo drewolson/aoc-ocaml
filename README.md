@@ -9,9 +9,9 @@ opam install . --deps-only --with-test
 ## Run
 
 ```
-dune exec aoc -- --help
-dune exec aoc -- --day 1 --part 1
-dune exec aoc -- -d1 -p1
+dune exec aoc -- -help
+dune exec aoc -- -day 1 -part 1
+dune exec aoc -- -d 1 -p 1
 ```
 
 ## Build

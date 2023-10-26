@@ -1,5 +1,4 @@
 module P = Util.Parser
-module A = Angstrom
 open P.Syntax
 
 type cmd =
@@ -12,32 +11,32 @@ type fs =
   | File of string * int
   | Dir of string * fs list
 
-let nameP =
-  A.take_while (function
+let name_p =
+  P.take_while (function
     | 'a' .. 'z' | '.' | '/' -> true
     | _ -> false)
 ;;
 
-let cdP =
-  let%map dir = A.string "$ cd " *> nameP in
+let cd_p =
+  let%map dir = P.string "$ cd " *> name_p in
   Cd dir
 ;;
 
-let lsP = Ls <$ A.string "$ ls"
+let ls_p = Ls <$ P.string "$ ls"
 
-let dirItemP =
-  let%map dir = A.string "dir " *> nameP in
+let dir_item_p =
+  let%map dir = P.string "dir " *> name_p in
   DirItem dir
 ;;
 
-let fileItemP =
-  let%map size = P.integerP <* A.char ' '
-  and file = nameP in
+let file_item_p =
+  let%map size = P.integer <* P.char ' '
+  and file = name_p in
   FileItem (size, file)
 ;;
 
-let cmdP = A.choice [ cdP; lsP; dirItemP; fileItemP ]
-let cmdsP = A.sep_by1 A.end_of_line cmdP
+let cmd_p = P.choice [ cd_p; ls_p; dir_item_p; file_item_p ]
+let cmds_p = P.sep_by1 P.end_of_line cmd_p
 
 let build_fs cmds =
   let rec build_nodes nodes = function
@@ -71,8 +70,7 @@ let sizes fs =
 
 let part1 input =
   input
-  |> A.parse_string ~consume:Prefix cmdsP
-  |> Result.ok_or_failwith
+  |> P.parse_exn cmds_p
   |> build_fs
   |> sizes
   |> List.filter ~f:(fun x -> x <= 100000)
@@ -80,13 +78,7 @@ let part1 input =
 ;;
 
 let part2 input =
-  let ns =
-    input
-    |> A.parse_string ~consume:Prefix cmdsP
-    |> Result.ok_or_failwith
-    |> build_fs
-    |> sizes
-  in
+  let ns = input |> P.parse_exn cmds_p |> build_fs |> sizes in
   let goal = 30000000 - (70000000 - List.hd_exn ns) in
   ns |> List.tl_exn |> List.sort ~compare |> List.find_exn ~f:(fun n -> n >= goal)
 ;;

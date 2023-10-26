@@ -1,5 +1,4 @@
 module P = Util.Parser
-module A = Angstrom
 module IntMap = Map.Make (Int)
 open P.Syntax
 
@@ -16,21 +15,21 @@ type instructions =
   ; crates : crate list IntMap.t
   }
 
-let dropLineP = A.skip_while (fun c -> not (Char.equal c '\n')) <* A.end_of_line
-let noCrateP = None <$ A.string "   "
-let yesCrateP = Option.some <$> A.char '[' *> A.any_char <* A.char ']'
-let crateP = noCrateP <|> yesCrateP
-let crateLineP = A.sep_by1 (A.char ' ') crateP
-let crateLinesP = A.sep_by1 A.end_of_line crateLineP <* A.end_of_line
+let drop_line_p = P.skip_while (fun c -> not (Char.equal c '\n')) <* P.end_of_line
+let no_crate_p = None <$ P.string "   "
+let yes_crate_p = Option.some <$> P.char '[' *> P.any_char <* P.char ']'
+let crate_p = no_crate_p <|> yes_crate_p
+let crate_line_p = P.sep_by1 (P.char ' ') crate_p
+let crate_lines_p = P.sep_by1 P.end_of_line crate_line_p <* P.end_of_line
 
-let moveP =
-  let%map n = A.string "move " *> P.integerP
-  and from = A.string " from " *> P.integerP
-  and to' = A.string " to " *> P.integerP in
+let move_p =
+  let%map n = P.string "move " *> P.integer
+  and from = P.string " from " *> P.integer
+  and to' = P.string " to " *> P.integer in
   { n; from; to' }
 ;;
 
-let movesP = A.sep_by1 A.end_of_line moveP
+let moves_p = P.sep_by1 P.end_of_line move_p
 
 let pad_crates crates =
   let max = crates |> List.map ~f:List.length |> Util.List.max_int in
@@ -48,10 +47,10 @@ let to_stacks crates =
   |> IntMap.of_alist_exn
 ;;
 
-let instructionsP =
-  let%map crateLines = crateLinesP <* dropLineP <* dropLineP
-  and moves = movesP in
-  let crates = to_stacks crateLines in
+let instructions_p =
+  let%map crate_lines = crate_lines_p <* drop_line_p <* drop_line_p
+  and moves = moves_p in
+  let crates = to_stacks crate_lines in
   { moves; crates }
 ;;
 
@@ -63,9 +62,7 @@ let move_crate f crates { n; from; to' } =
 ;;
 
 let find_crates f input =
-  let { moves; crates } =
-    input |> A.parse_string ~consume:Prefix instructionsP |> Result.ok_or_failwith
-  in
+  let { moves; crates } = P.parse_exn instructions_p input in
   moves
   |> List.fold ~init:crates ~f:(move_crate f)
   |> Map.data

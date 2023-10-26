@@ -22,6 +22,6 @@
 
     angstrom
     core
-    cmdliner
+    core_unix
     ppx_jane
     re))

@@ -3,7 +3,10 @@
   (name main)
   (libraries
     core
-    cmdliner
+    core_unix.command_unix
     runner)
+  (preprocess
+    (pps
+     ppx_jane))
   (flags
     -open Core))
