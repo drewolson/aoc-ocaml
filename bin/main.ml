@@ -26,8 +26,8 @@ let command_param =
     P.flag
       "year"
       (P.optional_with_default 2022 year_arg)
-      ~doc:"int year to run (default: 2022)"
       ~aliases:[ "y" ]
+      ~doc:"int year to run (default: 2022)"
   and day =
     P.flag "day" (P.required day_arg) ~aliases:[ "d" ] ~doc:"int day to run (1 - 25)"
   and part =
