@@ -1,0 +1,9 @@
+(library
+  (name util_test)
+  (libraries
+    ppx_jane
+    year2022)
+  (inline_tests)
+  (preprocess
+    (pps
+     ppx_jane)))

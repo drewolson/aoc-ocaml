@@ -25,6 +25,13 @@ let integer =
   Int.of_string tokens
 ;;
 
+let signed_integer =
+  let open Syntax in
+  let%map sign = 1 <$ char '+' <|> (-1 <$ char '-') <|> return 1
+  and n = integer in
+  sign * n
+;;
+
 let parse_exn parser input =
   input |> parse_string ~consume:Prefix parser |> Result.ok_or_failwith
 ;;

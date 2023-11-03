@@ -1,8 +1,13 @@
 (library
   (name year2023)
   (libraries
+    angstrom
     core
+    ppx_jane
     re
     util)
+  (preprocess
+    (pps
+     ppx_jane))
   (flags
     -open Core))
