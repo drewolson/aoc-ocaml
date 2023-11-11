@@ -17,8 +17,10 @@
   (name aoc)
   (synopsis "Advent of Code in Ocaml")
   (depends
-    ocaml
     dune
+    ocaml
+    ocaml-lsp-server
+    ocamlformat
 
     angstrom
     core

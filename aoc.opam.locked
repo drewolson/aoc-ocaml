@@ -13,6 +13,8 @@ depends: [
   "core_unix" {= "v0.16.0"}
   "dune" {= "3.11.1"}
   "ocaml" {= "5.1.0"}
+  "ocaml-lsp-server" {= "1.16.2"}
+  "ocamlformat" {= "0.26.1"}
   "ppx_jane" {= "v0.16.0"}
   "re" {= "1.11.0"}
 ]

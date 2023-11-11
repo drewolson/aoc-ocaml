@@ -6,6 +6,12 @@
 opam install . --deps-only --with-test
 ```
 
+## Lock Dependencies
+
+```
+opam lock -d .
+```
+
 ## Run
 
 ```
