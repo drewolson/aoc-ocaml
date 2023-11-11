@@ -9,7 +9,7 @@ opam install . --deps-only --with-test
 ## Lock Dependencies
 
 ```
-opam lock -d .
+opam lock . --direct-only
 ```
 
 ## Run
