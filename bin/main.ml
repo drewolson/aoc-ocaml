@@ -1,3 +1,6 @@
+module P = Command.Param
+open Command.Let_syntax
+
 let year_arg =
   Command.Arg_type.create (fun year_str ->
     match Int.of_string_opt year_str with
@@ -20,8 +23,6 @@ let part_arg =
 ;;
 
 let command_param =
-  let open Command.Let_syntax in
-  let module P = Command.Param in
   let%map year =
     P.flag
       "year"
