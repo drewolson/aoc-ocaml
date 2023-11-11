@@ -18,17 +18,17 @@ let grid_size grid =
 let coords grid =
   let open List.Let_syntax in
   let max_x, max_y = grid_size grid in
-  let%bind x = List.init max_x ~f:Fn.id
-  and y = List.init max_y ~f:Fn.id in
+  let%bind x = List.range 0 max_x
+  and y = List.range 0 max_y in
   return (x, y)
 ;;
 
 let rays x y grid =
   let max_x, max_y = grid_size grid in
-  [ List.init x ~f:(fun x' -> x', y) |> List.rev
-  ; List.init (max_x - x - 1) ~f:(fun x' -> x' + x + 1, y)
-  ; List.init y ~f:(fun y' -> x, y') |> List.rev
-  ; List.init (max_y - y - 1) ~f:(fun y' -> x, y' + y + 1)
+  [ List.range 0 x |> List.map ~f:(fun x' -> x', y) |> List.rev
+  ; List.range (x + 1) max_x |> List.map ~f:(fun x' -> x', y)
+  ; List.range 0 y |> List.map ~f:(fun y' -> x, y') |> List.rev
+  ; List.range (y + 1) max_y |> List.map ~f:(fun y' -> x, y')
   ]
 ;;
 

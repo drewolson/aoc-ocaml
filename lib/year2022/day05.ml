@@ -34,7 +34,7 @@ let moves_p = P.sep_by1 P.end_of_line move_p
 let pad_crates crates =
   let max = crates |> List.map ~f:List.length |> Util.List.max_int in
   List.map crates ~f:(fun l ->
-    let pad = List.init (max - List.length l) ~f:(const None) in
+    let pad = List.range (List.length l) max |> List.map ~f:(const None) in
     l @ pad)
 ;;
 
