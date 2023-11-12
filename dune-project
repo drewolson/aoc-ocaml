@@ -21,6 +21,7 @@
     ocaml
     ocaml-lsp-server
     ocamlformat
+    utop
 
     angstrom
     core

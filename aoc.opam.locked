@@ -17,6 +17,7 @@ depends: [
   "ocamlformat" {= "0.26.1"}
   "ppx_jane" {= "v0.16.0"}
   "re" {= "1.11.0"}
+  "utop" {= "2.13.1"}
 ]
 build: [
   ["dune" "subst"] {dev}
