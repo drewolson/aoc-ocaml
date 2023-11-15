@@ -11,6 +11,6 @@ let part2 input =
   input
   |> totals
   |> List.sort ~compare:(fun x y -> -compare x y)
-  |> Util.List.take 3
+  |> Util.List.take ~n:3
   |> Util.List.sum_int
 ;;
