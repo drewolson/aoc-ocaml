@@ -4,23 +4,18 @@ open P.Syntax
 type inst =
   | AddX of int
   | Noop
-  | Wait
 
 let addx_p =
   let%map i = P.string "addx " *> P.signed_integer in
-  [ Wait; AddX i ]
+  [ Noop; AddX i ]
 ;;
 
 let inst_p = addx_p <|> ([ Noop ] <$ P.string "noop")
-
-let insts_p =
-  let%map insts = P.sep_by1 P.end_of_line inst_p in
-  List.concat insts
-;;
+let insts_p = P.sep_by1 P.end_of_line inst_p >>| List.concat
 
 let execute (i, acc) = function
   | AddX n -> (i + 1, acc + n), (i, acc)
-  | _ -> (i + 1, acc), (i, acc)
+  | Noop -> (i + 1, acc), (i, acc)
 ;;
 
 let part1 input =
