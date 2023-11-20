@@ -18,6 +18,13 @@ let execute (i, acc) = function
   | Noop -> (i + 1, acc), (i, acc)
 ;;
 
+let to_line vals =
+  vals
+  |> List.zip_exn (List.range 0 40)
+  |> List.map ~f:(fun (v, i) -> if abs (i - v) <= 1 then "#" else ".")
+  |> String.concat
+;;
+
 let part1 input =
   input
   |> P.parse_exn insts_p
@@ -26,13 +33,6 @@ let part1 input =
   |> List.chunks_of ~length:40
   |> List.map ~f:List.hd_exn
   |> List.sum (module Int) ~f:(fun (i, n) -> i * n)
-;;
-
-let to_line vals =
-  vals
-  |> List.zip_exn (List.init 40 ~f:Fn.id)
-  |> List.map ~f:(fun (v, i) -> if v = i || v = i - 1 || v = i + 1 then "#" else ".")
-  |> String.concat
 ;;
 
 let part2 input =
