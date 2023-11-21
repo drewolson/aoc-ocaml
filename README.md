@@ -3,7 +3,7 @@
 ## Install Dependencies
 
 ```
-opam install . --deps-only --with-test
+opam install . --deps-only
 ```
 
 ## Lock Dependencies
@@ -30,4 +30,10 @@ dune build
 
 ```
 dune test
+```
+
+## Create Local Switch
+
+```
+opam switch create ./ 5.1.0 --deps-only
 ```
