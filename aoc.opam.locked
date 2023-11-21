@@ -18,6 +18,7 @@ depends: [
   "ppx_jane" {= "v0.16.0"}
   "re" {= "1.11.0"}
   "utop" {= "2.13.1"}
+  "zarith" {= "1.13"}
 ]
 build: [
   ["dune" "subst"] {dev}

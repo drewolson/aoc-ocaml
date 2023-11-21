@@ -17,6 +17,7 @@ depends: [
   "core_unix"
   "ppx_jane"
   "re"
+  "zarith"
   "odoc" {with-doc}
 ]
 build: [

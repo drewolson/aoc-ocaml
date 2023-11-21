@@ -27,4 +27,5 @@
     core
     core_unix
     ppx_jane
-    re))
+    re
+    zarith))
