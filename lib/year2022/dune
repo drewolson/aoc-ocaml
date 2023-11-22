@@ -5,7 +5,8 @@
     core
     ppx_jane
     re
-    util)
+    util
+    zarith)
   (preprocess
     (pps
      ppx_jane))
