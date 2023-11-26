@@ -1,10 +1,13 @@
+module IntSet = Set.Make (Int)
 module P = Command.Param
 open Command.Let_syntax
+
+let years = IntSet.of_list [ 2022; 2023 ]
 
 let year_arg =
   Command.Arg_type.create (fun year_str ->
     match Int.of_string_opt year_str with
-    | Some year when year = 2022 || year = 2023 -> year
+    | Some year when Set.mem years year -> year
     | _ -> failwith "Year must be [2022, 2023]")
 ;;
 
@@ -26,9 +29,9 @@ let command_param =
   let%map year =
     P.flag
       "year"
-      (P.optional_with_default 2022 year_arg)
+      (P.optional_with_default 2023 year_arg)
       ~aliases:[ "y" ]
-      ~doc:"int year to run (default: 2022)"
+      ~doc:"int year to run (default: 2023)"
   and day =
     P.flag "day" (P.required day_arg) ~aliases:[ "d" ] ~doc:"int day to run (1 - 25)"
   and part =
