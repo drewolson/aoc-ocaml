@@ -40,4 +40,4 @@ let command_param =
   fun _ -> Runner.run year day part
 ;;
 
-let () = Command_unix.run (Command.basic command_param ~summary:"Run aoc solution")
+let () = Command_unix.run @@ Command.basic command_param ~summary:"Run aoc solution"
