@@ -1,11 +1,7 @@
 include Angstrom
 
 module Syntax = struct
-  module Let_syntax = Angstrom.Let_syntax.Let_syntax
-
-  let ( let+ ) = ( let+ )
-  let ( and+ ) = ( and+ )
-  let ( let* ) = ( let* )
+  include Angstrom.Let_syntax
 
   let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
     ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> )
