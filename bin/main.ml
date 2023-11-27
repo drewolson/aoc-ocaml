@@ -1,6 +1,4 @@
 module IntSet = Set.Make (Int)
-module P = Command.Param
-open Command.Let_syntax
 
 let years = IntSet.of_list [ 2022; 2023 ]
 
@@ -26,16 +24,15 @@ let part_arg =
 ;;
 
 let command_param =
-  let%map year =
-    P.flag
+  let%map_open.Command year =
+    flag
       "year"
-      (P.optional_with_default 2023 year_arg)
+      (optional_with_default 2023 year_arg)
       ~aliases:[ "y" ]
       ~doc:"int year to run (default: 2023)"
-  and day =
-    P.flag "day" (P.required day_arg) ~aliases:[ "d" ] ~doc:"int day to run (1 - 25)"
+  and day = flag "day" (required day_arg) ~aliases:[ "d" ] ~doc:"int day to run (1 - 25)"
   and part =
-    P.flag "part" (P.required part_arg) ~aliases:[ "p" ] ~doc:"int part to run (1 or 2)"
+    flag "part" (required part_arg) ~aliases:[ "p" ] ~doc:"int part to run (1 or 2)"
   in
   fun _ -> Runner.run year day part
 ;;

@@ -1,6 +1,6 @@
+module IntMap = Map.Make (Int)
 module P = Util.Parser
 open P.Syntax
-module IntMap = Map.Make (Int)
 
 type monkey =
   { id : int
