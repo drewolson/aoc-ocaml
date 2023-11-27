@@ -3,8 +3,8 @@ include Angstrom
 module Syntax = struct
   include Angstrom.Let_syntax
 
-  let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
-    ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> )
+  let ( >>= ), ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
+    ( >>= ), ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> )
   ;;
 
   let ( $> ) p a = p >>| const a
