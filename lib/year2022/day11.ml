@@ -1,4 +1,5 @@
 module P = Util.Parser
+open P.Syntax
 module IntMap = Map.Make (Int)
 
 type monkey =
@@ -13,7 +14,6 @@ type monkey =
 let items_p = P.sep_by1 (P.string ", ") P.integer
 
 let op_p =
-  let open P.Ops in
   P.choice
     [ P.string "new = old + " *> P.integer >>| Z.of_int >>| Z.( + )
     ; P.string "new = old * " *> P.integer >>| Z.of_int >>| Z.( * )
@@ -21,18 +21,11 @@ let op_p =
     ]
 ;;
 
-let div_test_p =
-  let open P.Ops in
-  P.string "divisible by " *> P.integer >>| Z.of_int
-;;
-
-let throw_p =
-  let open P.Ops in
-  P.string "throw to monkey " *> P.integer
-;;
+let div_test_p = P.string "divisible by " *> P.integer >>| Z.of_int
+let throw_p = P.string "throw to monkey " *> P.integer
 
 let monkey_p =
-  let%map_open.P id = P.string "Monkey " *> P.integer <* P.string ":" <* P.end_of_line
+  let%map id = P.string "Monkey " *> P.integer <* P.string ":" <* P.end_of_line
   and items = P.string "  Starting items: " *> items_p <* P.end_of_line
   and op = P.string "  Operation: " *> op_p <* P.end_of_line
   and div_test = P.string "  Test: " *> div_test_p <* P.end_of_line

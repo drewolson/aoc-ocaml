@@ -1,4 +1,5 @@
 module P = Util.Parser
+open P.Syntax
 
 type range =
   { start : int
@@ -6,13 +7,13 @@ type range =
   }
 
 let range_p =
-  let%map_open.P start = P.integer <* P.char '-'
+  let%map start = P.integer <* P.char '-'
   and stop = P.integer in
   { start; stop }
 ;;
 
 let range_pair_p =
-  let%map_open.P a = range_p <* P.char ','
+  let%map a = range_p <* P.char ','
   and b = range_p in
   a, b
 ;;

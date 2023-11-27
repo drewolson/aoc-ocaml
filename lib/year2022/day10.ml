@@ -1,23 +1,17 @@
 module P = Util.Parser
+open P.Syntax
 
 type inst =
   | AddX of int
   | Noop
 
 let addx_p =
-  let%map_open.P i = P.string "addx " *> P.signed_integer in
+  let%map i = P.string "addx " *> P.signed_integer in
   [ Noop; AddX i ]
 ;;
 
-let inst_p =
-  let open P.Ops in
-  addx_p <|> ([ Noop ] <$ P.string "noop")
-;;
-
-let insts_p =
-  let open P.Ops in
-  P.sep_by1 P.end_of_line inst_p >>| List.concat
-;;
+let inst_p = addx_p <|> ([ Noop ] <$ P.string "noop")
+let insts_p = P.sep_by1 P.end_of_line inst_p >>| List.concat
 
 let execute (i, acc) = function
   | AddX n -> (i + 1, acc + n), (i, acc)
