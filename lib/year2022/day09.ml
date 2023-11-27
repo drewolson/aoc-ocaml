@@ -1,5 +1,4 @@
 module P = Util.Parser
-open P.Syntax
 
 module Coord = struct
   type t = int * int [@@deriving sexp, compare]
@@ -8,6 +7,7 @@ end
 module CoordSet = Set.Make (Coord)
 
 let dir_p =
+  let open P.Ops in
   P.choice
     [ (1, 0) <$ P.char 'R'
     ; (-1, 0) <$ P.char 'L'
@@ -17,7 +17,7 @@ let dir_p =
 ;;
 
 let step_p =
-  let%map dir = dir_p <* P.char ' '
+  let%map_open.P dir = dir_p <* P.char ' '
   and num = P.integer in
   dir, num
 ;;

@@ -1,19 +1,29 @@
 include Angstrom
 
-module Syntax = struct
-  include Angstrom.Let_syntax
-
-  let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ) =
-    ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> )
+module Ops = struct
+  let ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ), ( >>= ) =
+    ( >>| ), ( *> ), ( <* ), ( <|> ), ( <$> ), ( >>= )
   ;;
 
   let ( $> ) p a = p >>| const a
   let ( <$ ) a p = p >>| const a
 end
 
+module Let_syntax = struct
+  module Let_syntax = struct
+    include Angstrom.Let_syntax.Let_syntax
+
+    module Open_on_rhs = struct
+      include Ops
+
+      let return = return
+    end
+  end
+end
+
 let integer =
-  let open Syntax in
-  let%map tokens =
+  let open Let_syntax in
+  let%map_open tokens =
     take_while1 (function
       | '0' .. '9' -> true
       | _ -> false)
@@ -22,8 +32,8 @@ let integer =
 ;;
 
 let signed_integer =
-  let open Syntax in
-  let%map sign = 1 <$ char '+' <|> (-1 <$ char '-') <|> return 1
+  let open Let_syntax in
+  let%map_open sign = 1 <$ char '+' <|> (-1 <$ char '-') <|> return 1
   and n = integer in
   sign * n
 ;;

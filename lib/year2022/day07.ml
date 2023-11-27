@@ -1,5 +1,4 @@
 module P = Util.Parser
-open P.Syntax
 
 type cmd =
   | Cd of string
@@ -18,19 +17,22 @@ let name_p =
 ;;
 
 let cd_p =
-  let%map dir = P.string "$ cd " *> name_p in
+  let%map_open.P dir = P.string "$ cd " *> name_p in
   Cd dir
 ;;
 
-let ls_p = Ls <$ P.string "$ ls"
+let ls_p =
+  let open P.Ops in
+  Ls <$ P.string "$ ls"
+;;
 
 let dir_item_p =
-  let%map dir = P.string "dir " *> name_p in
+  let%map_open.P dir = P.string "dir " *> name_p in
   DirItem dir
 ;;
 
 let file_item_p =
-  let%map size = P.integer <* P.char ' '
+  let%map_open.P size = P.integer <* P.char ' '
   and file = name_p in
   FileItem (size, file)
 ;;
