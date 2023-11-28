@@ -6,7 +6,6 @@
     core_unix.command_unix
     runner)
   (preprocess
-    (pps
-     ppx_jane))
+    (pps ppx_jane))
   (flags
     -open Core))

@@ -8,7 +8,6 @@
     util
     zarith)
   (preprocess
-    (pps
-     ppx_jane))
+    (pps ppx_jane))
   (flags
     -open Core))
