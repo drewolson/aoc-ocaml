@@ -1,3 +1,10 @@
+let run2023 day part input =
+  match day, part with
+  | 1, 1 -> Printf.printf "%i\n" @@ Year2023.Day01.part1 input
+  | 1, 2 -> Printf.printf "%i\n" @@ Year2023.Day01.part2 input
+  | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
+;;
+
 let run2022 day part input =
   match day, part with
   | 1, 1 -> Printf.printf "%i\n" @@ Year2022.Day01.part1 input
@@ -22,13 +29,6 @@ let run2022 day part input =
   | 10, 2 -> Stdio.print_endline @@ Year2022.Day10.part2 input
   | 11, 1 -> Stdio.print_endline @@ Year2022.Day11.part1 input
   | 11, 2 -> Stdio.print_endline @@ Year2022.Day11.part1 input
-  | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
-;;
-
-let run2023 day part input =
-  match day, part with
-  | 1, 1 -> Printf.printf "%i\n" @@ Year2023.Day01.part1 input
-  | 1, 2 -> Printf.printf "%i\n" @@ Year2023.Day01.part2 input
   | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
 ;;
 
