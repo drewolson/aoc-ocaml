@@ -15,13 +15,11 @@ let input = {|1000
 |}
 
 let%expect_test "2022 day1 part1" =
-  let result = Year2022.Day01.part1 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day01.part1 input;
   [%expect {| 24000 |}]
 ;;
 
 let%expect_test "2022 day1 part2" =
-  let result = Year2022.Day01.part2 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day01.part2 input;
   [%expect {| 45000 |}]
 ;;

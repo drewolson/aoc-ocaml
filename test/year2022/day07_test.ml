@@ -26,13 +26,11 @@ $ ls
 ;;
 
 let%expect_test "2022 day7 part1" =
-  let result = Year2022.Day07.part1 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day07.part1 input;
   [%expect {| 95437 |}]
 ;;
 
 let%expect_test "2022 day7 part2" =
-  let result = Year2022.Day07.part2 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day07.part2 input;
   [%expect {| 24933642 |}]
 ;;

@@ -19,13 +19,11 @@ U 20
 |}
 
 let%expect_test "2022 day9 part1" =
-  let result = Year2022.Day09.part1 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day09.part1 input;
   [%expect {| 13 |}]
 ;;
 
 let%expect_test "2022 day9 part2" =
-  let result = Year2022.Day09.part2 input2 in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day09.part2 input2;
   [%expect {| 36 |}]
 ;;

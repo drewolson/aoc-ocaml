@@ -30,13 +30,11 @@ Monkey 3:
 ;;
 
 let%expect_test "2022 day11 part1" =
-  let result = Year2022.Day11.part1 input in
-  Stdio.print_endline result;
+  Stdio.print_endline @@ Year2022.Day11.part1 input;
   [%expect {| 10605 |}]
 ;;
 
 let%expect_test "2022 day11 part2" =
-  let result = Year2022.Day11.part2 input in
-  Stdio.print_endline result;
+  Stdio.print_endline @@ Year2022.Day11.part2 input;
   [%expect {| 2713310158 |}]
 ;;

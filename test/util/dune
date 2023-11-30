@@ -5,4 +5,6 @@
     year2022)
   (inline_tests)
   (preprocess
-    (pps ppx_jane)))
+    (pps ppx_jane))
+  (flags
+    -open Core))

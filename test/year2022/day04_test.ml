@@ -7,13 +7,11 @@ let input = {|2-4,6-8
 |}
 
 let%expect_test "2022 day4 part1" =
-  let result = Year2022.Day04.part1 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day04.part1 input;
   [%expect {| 2 |}]
 ;;
 
 let%expect_test "2022 day4 part2" =
-  let result = Year2022.Day04.part2 input in
-  Printf.printf "%i" result;
+  Printf.printf "%i" @@ Year2022.Day04.part2 input;
   [%expect {| 4 |}]
 ;;
