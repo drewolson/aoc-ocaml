@@ -16,11 +16,10 @@ let grid_size grid =
 ;;
 
 let coords grid =
-  let open List.Let_syntax in
   let max_x, max_y = grid_size grid in
-  let%bind x = List.range 0 max_x
+  let%bind.List x = List.range 0 max_x
   and y = List.range 0 max_y in
-  return (x, y)
+  List.return (x, y)
 ;;
 
 let rays x y grid =
@@ -33,11 +32,10 @@ let rays x y grid =
 ;;
 
 let visible grid (x, y) =
-  let h = grid.(x).(y) in
   grid
   |> rays x y
   |> List.exists ~f:(fun ray ->
-    ray |> List.for_all ~f:(fun (x', y') -> grid.(x').(y') < h))
+    ray |> List.for_all ~f:(fun (x', y') -> grid.(x').(y') < grid.(x).(y)))
 ;;
 
 let scenic_score grid (x, y) =
