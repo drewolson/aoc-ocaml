@@ -17,11 +17,11 @@ let re_b =
   |> Re.compile
 ;;
 
-let replace_word m = Map.find mapping m |> Option.value ~default:m
+let numberify m = Map.find mapping m |> Option.value ~default:m
 
 let to_digit' line =
-  let a = Re.Group.get (Re.exec re_f line) 0 |> replace_word in
-  let b = Re.Group.get (Re.exec re_b (String.rev line)) 0 |> String.rev |> replace_word in
+  let a = line |> Util.Regex.first ~r:re_f |> numberify in
+  let b = line |> String.rev |> Util.Regex.first ~r:re_b |> String.rev |> numberify in
   Int.of_string (a ^ b)
 ;;
 

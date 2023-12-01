@@ -3,7 +3,8 @@
   (libraries
     angstrom
     core
-    ppx_jane)
+    ppx_jane
+    re)
   (preprocess
     (pps ppx_jane))
   (flags
