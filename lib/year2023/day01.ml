@@ -17,9 +17,6 @@ let re_b =
   |> Re.compile
 ;;
 
-let rep_f re = Re.Group.get re 0 |> Map.find_exn mapping
-let rep_b re = Re.Group.get re 0 |> String.rev |> Map.find_exn mapping
-
 let replace_word m =
   match Map.find mapping m with
   | Some i -> i
