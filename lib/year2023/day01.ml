@@ -17,11 +17,7 @@ let re_b =
   |> Re.compile
 ;;
 
-let replace_word m =
-  match Map.find mapping m with
-  | Some i -> i
-  | _ -> m
-;;
+let replace_word m = Map.find mapping m |> Option.value ~default:m
 
 let to_digit' line =
   let a = Re.Group.get (Re.exec re_f line) 0 |> replace_word in
