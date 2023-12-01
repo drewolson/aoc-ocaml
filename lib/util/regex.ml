@@ -1,1 +1,1 @@
-let first str ~r = Re.Group.get (Re.exec r str) 0
+let first str ~rex = (Pcre.extract ~rex str).(0)

@@ -3,25 +3,21 @@ module StrMap = Map.Make (String)
 let words = [ "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" ]
 let digits = List.range 1 10 |> List.map ~f:Int.to_string
 let mapping = List.zip_exn words digits |> StrMap.of_alist_exn
-
-let re_f =
-  words |> List.append digits |> String.concat ~sep:"|" |> Re.Pcre.re |> Re.compile
-;;
+let re_f = words |> List.append digits |> String.concat ~sep:"|" |> Pcre.regexp
 
 let re_b =
   words
   |> List.map ~f:String.rev
   |> List.append digits
   |> String.concat ~sep:"|"
-  |> Re.Pcre.re
-  |> Re.compile
+  |> Pcre.regexp
 ;;
 
 let numberify m = Map.find mapping m |> Option.value ~default:m
 
 let to_digit' line =
-  let a = line |> Util.Regex.first ~r:re_f |> numberify in
-  let b = line |> String.rev |> Util.Regex.first ~r:re_b |> String.rev |> numberify in
+  let a = line |> Util.Regex.first ~rex:re_f |> numberify in
+  let b = line |> String.rev |> Util.Regex.first ~rex:re_b |> String.rev |> numberify in
   Int.of_string (a ^ b)
 ;;
 

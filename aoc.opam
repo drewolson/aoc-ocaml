@@ -15,8 +15,8 @@ depends: [
   "angstrom"
   "core"
   "core_unix"
+  "pcre"
   "ppx_jane"
-  "re"
   "zarith"
   "odoc" {with-doc}
 ]

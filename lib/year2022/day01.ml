@@ -1,6 +1,6 @@
 let totals input =
   input
-  |> Re.Str.split (Re.Str.regexp "\n\n")
+  |> Pcre.split ~rex:(Pcre.regexp "\n\n")
   |> List.map ~f:(fun ls ->
     ls |> String.split_lines |> List.map ~f:Int.of_string |> Util.List.sum_int)
 ;;

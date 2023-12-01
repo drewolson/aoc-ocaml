@@ -4,7 +4,7 @@
     angstrom
     core
     ppx_jane
-    re
+    pcre
     util
     zarith)
   (preprocess

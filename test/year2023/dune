@@ -1,6 +1,7 @@
 (library
   (name year2023_test)
   (libraries
+    core
     ppx_jane
     year2023)
   (inline_tests)

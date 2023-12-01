@@ -26,6 +26,6 @@
     angstrom
     core
     core_unix
+    pcre
     ppx_jane
-    re
     zarith))

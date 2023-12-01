@@ -15,8 +15,8 @@ depends: [
   "ocaml" {= "5.1.0"}
   "ocaml-lsp-server" {= "1.16.2"}
   "ocamlformat" {= "0.26.1"}
+  "pcre" {= "7.5.0"}
   "ppx_jane" {= "v0.16.0"}
-  "re" {= "1.11.0"}
   "utop" {= "2.13.1"}
   "zarith" {= "1.13"}
 ]
