@@ -5,7 +5,7 @@ let digits = List.range 1 10 |> List.map ~f:Int.to_string
 let mapping = digits |> List.zip_exn words |> StrMap.of_alist_exn
 
 let re_f =
-  words |> List.append digits |> String.concat ~sep:"|" |> Re.Perl.re |> Re.compile
+  words |> List.append digits |> String.concat ~sep:"|" |> Re.Pcre.re |> Re.compile
 ;;
 
 let re_b =
@@ -13,7 +13,7 @@ let re_b =
   |> List.map ~f:String.rev
   |> List.append digits
   |> String.concat ~sep:"|"
-  |> Re.Perl.re
+  |> Re.Pcre.re
   |> Re.compile
 ;;
 
