@@ -1,0 +1,64 @@
+module P = Util.Parser
+open P.Syntax
+
+type color =
+  | Blue
+  | Red
+  | Green
+
+type draw =
+  { count : int
+  ; color : color
+  }
+
+type draws = draw list
+
+type game =
+  { id : int
+  ; round : draws list
+  }
+
+let color_p =
+  P.choice [ Red <$ P.string "red"; Blue <$ P.string "blue"; Green <$ P.string "green" ]
+;;
+
+let draw_p =
+  let%map count = P.integer <* P.char ' '
+  and color = color_p in
+  { count; color }
+;;
+
+let draws_p = P.sep_by1 (P.string ", ") draw_p
+let round_p = P.sep_by1 (P.string "; ") draws_p
+
+let game_p =
+  let%map id = P.string "Game " *> P.integer <* P.string ": "
+  and round = round_p in
+  { id; round }
+;;
+
+let games_p = P.sep_by1 P.end_of_line game_p
+
+let count color g =
+  List.fold g.round ~init:0 ~f:(fun acc draws ->
+    let total =
+      List.sum
+        (module Int)
+        draws
+        ~f:(fun draw -> if phys_equal draw.color color then draw.count else 0)
+    in
+    max acc total)
+;;
+
+let is_possible g = count Red g <= 12 && count Green g <= 13 && count Blue g <= 14
+let power g = count Red g * count Green g * count Blue g
+
+let part1 input =
+  input
+  |> P.parse_exn games_p
+  |> List.filter ~f:is_possible
+  |> List.map ~f:(fun g -> g.id)
+  |> Util.List.sum_int
+;;
+
+let part2 input = input |> P.parse_exn games_p |> List.sum (module Int) ~f:power
