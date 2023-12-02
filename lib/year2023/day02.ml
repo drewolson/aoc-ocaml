@@ -2,9 +2,9 @@ module P = Util.Parser
 open P.Syntax
 
 type color =
-  | Blue
   | Red
   | Green
+  | Blue
 [@@deriving equal]
 
 type draw =
@@ -20,7 +20,7 @@ type game =
   }
 
 let color_p =
-  P.choice [ Red <$ P.string "red"; Blue <$ P.string "blue"; Green <$ P.string "green" ]
+  P.choice [ Red <$ P.string "red"; Green <$ P.string "green"; Blue <$ P.string "blue" ]
 ;;
 
 let draw_p =
