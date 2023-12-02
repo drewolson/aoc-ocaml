@@ -40,14 +40,13 @@ let game_p =
 let games_p = P.sep_by1 P.end_of_line game_p
 
 let count color g =
-  List.fold g.round ~init:0 ~f:(fun acc draws ->
-    let total =
-      List.sum
-        (module Int)
-        draws
-        ~f:(fun draw -> if phys_equal draw.color color then draw.count else 0)
-    in
-    max acc total)
+  let draw_count draws =
+    List.sum
+      (module Int)
+      draws
+      ~f:(fun draw -> if phys_equal draw.color color then draw.count else 0)
+  in
+  List.fold g.round ~init:0 ~f:(fun acc draws -> max acc (draw_count draws))
 ;;
 
 let is_possible g = count Red g <= 12 && count Green g <= 13 && count Blue g <= 14
@@ -57,8 +56,7 @@ let part1 input =
   input
   |> P.parse_exn games_p
   |> List.filter ~f:is_possible
-  |> List.map ~f:(fun g -> g.id)
-  |> Util.List.sum_int
+  |> List.sum (module Int) ~f:(fun g -> g.id)
 ;;
 
 let part2 input = input |> P.parse_exn games_p |> List.sum (module Int) ~f:power
