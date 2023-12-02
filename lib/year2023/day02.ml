@@ -5,6 +5,7 @@ type color =
   | Blue
   | Red
   | Green
+[@@deriving equal]
 
 type draw =
   { count : int
@@ -44,7 +45,7 @@ let count color g =
     List.sum
       (module Int)
       draws
-      ~f:(fun draw -> if phys_equal draw.color color then draw.count else 0)
+      ~f:(fun draw -> if equal_color draw.color color then draw.count else 0)
   in
   List.fold g.round ~init:0 ~f:(fun acc draws -> max acc (draw_count draws))
 ;;
