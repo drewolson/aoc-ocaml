@@ -28,6 +28,13 @@ let signed_integer =
   sign * n
 ;;
 
+let spaces =
+  take_while1 (function
+    | ' ' -> true
+    | _ -> false)
+  >>| ignore
+;;
+
 let parse_exn parser input =
   input |> parse_string ~consume:Prefix parser |> Result.ok_or_failwith
 ;;
