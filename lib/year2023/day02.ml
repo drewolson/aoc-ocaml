@@ -47,7 +47,7 @@ let count color g =
       draws
       ~f:(fun draw -> if equal_color draw.color color then draw.count else 0)
   in
-  List.fold g.round ~init:0 ~f:(fun acc draws -> max acc (draw_count draws))
+  g.round |> List.map ~f:draw_count |> Util.List.max_int
 ;;
 
 let is_possible g = count Red g <= 12 && count Green g <= 13 && count Blue g <= 14
