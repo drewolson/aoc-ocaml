@@ -14,11 +14,7 @@ let make_grid input =
 
 let find_num_locs grid =
   let max_x =
-    grid
-    |> Map.keys
-    |> List.map ~f:snd
-    |> List.max_elt ~compare
-    |> Option.value ~default:0
+    grid |> Map.keys |> List.map ~f:snd |> List.max_elt ~compare |> Option.value_exn
   in
   grid
   |> Map.keys
@@ -72,7 +68,7 @@ let gear_ratio grid num_locs pos =
   | Some '*' ->
     let match_num_locs =
       List.filter num_locs ~f:(fun num_loc ->
-        let ns = num_loc |> neighbors in
+        let ns = neighbors num_loc in
         List.mem ns pos ~equal:Coord.equal)
     in
     (match match_num_locs with
