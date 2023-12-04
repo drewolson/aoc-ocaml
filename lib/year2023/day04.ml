@@ -37,7 +37,7 @@ let part1 input =
   |> P.parse_exn cards_p
   |> List.map ~f:num_matches
   |> List.filter ~f:(fun l -> l > 0)
-  |> List.sum (module Int) ~f:(fun l -> Int.pow 2 (max 0 (l - 1)))
+  |> List.sum (module Int) ~f:(fun l -> Int.pow 2 (l - 1))
 ;;
 
 let part2 input =
