@@ -23,8 +23,8 @@ let num_matches card = card.winners |> Set.inter card.picks |> Set.length
 
 let play counts card =
   let count = Map.find_exn counts card.id in
-  List.range (card.id + 1) (card.id + 1 + num_matches card)
-  |> List.fold ~init:counts ~f:(fun m key ->
+  let new_cards = List.range (card.id + 1) (card.id + 1 + num_matches card) in
+  List.fold new_cards ~init:counts ~f:(fun m key ->
     Util.Map.alter m ~key ~f:(fun c -> c + count))
 ;;
 
