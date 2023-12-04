@@ -17,13 +17,12 @@ let find_num_locs grid =
     grid |> Map.keys |> List.map ~f:snd |> List.max_elt ~compare |> Option.value_exn
   in
   grid
-  |> Map.keys
-  |> List.sort ~compare:Coord.compare
-  |> List.fold ~init:(None, []) ~f:(fun (curr, l) ((y, x) as pos) ->
-    match Map.find_exn grid pos, curr with
-    | '0' .. '9', None -> Some pos, l
+  |> Map.fold ~init:(None, []) ~f:(fun ~key ~data (curr, l) ->
+    match data, curr with
+    | '0' .. '9', None -> Some key, l
     | '0' .. '9', _ -> curr, l
     | _, Some ((_, xstart) as start) ->
+      let x = snd key in
       if x = 0
       then None, (start, max_x + 1 - xstart) :: l
       else None, (start, x - xstart) :: l
@@ -63,18 +62,18 @@ let loc_to_num grid ((y, x), len) =
   |> Int.of_string
 ;;
 
-let gear_ratio grid num_locs pos =
-  match Map.find grid pos with
-  | Some '*' ->
+let gear_ratio grid num_locs ~key ~data =
+  if not @@ Char.equal data '*'
+  then None
+  else (
     let match_num_locs =
       List.filter num_locs ~f:(fun num_loc ->
         let ns = neighbors num_loc in
-        List.mem ns pos ~equal:Coord.equal)
+        List.mem ns key ~equal:Coord.equal)
     in
-    (match match_num_locs with
-     | [ a; b ] -> Some (loc_to_num grid a * loc_to_num grid b)
-     | _ -> None)
-  | _ -> None
+    match match_num_locs with
+    | [ a; b ] -> Some (loc_to_num grid a * loc_to_num grid b)
+    | _ -> None)
 ;;
 
 let part1 input =
@@ -88,5 +87,5 @@ let part1 input =
 let part2 input =
   let grid = make_grid input in
   let num_locs = find_num_locs grid in
-  grid |> Map.keys |> List.filter_map ~f:(gear_ratio grid num_locs) |> Util.List.sum_int
+  grid |> Map.filter_mapi ~f:(gear_ratio grid num_locs) |> Map.data |> Util.List.sum_int
 ;;
