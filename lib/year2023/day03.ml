@@ -62,7 +62,7 @@ let loc_to_num grid ((y, x), len) =
 ;;
 
 let gear_ratio grid num_locs ~key ~data =
-  if not @@ Char.equal data '*'
+  if not (Char.equal data '*')
   then None
   else (
     let match_num_locs =
