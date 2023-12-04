@@ -33,16 +33,15 @@ let find_num_locs grid =
 let neighbors ((y, x), len) =
   List.range x (x + len)
   |> List.concat_map ~f:(fun x' ->
-    let left = [ y - 1, x' - 1; y, x' - 1; y + 1, x' - 1 ] in
-    let middle = [ y - 1, x'; y + 1, x' ] in
-    let right = [ y - 1, x' + 1; y, x' + 1; y + 1, x' + 1 ] in
-    if len = 1
-    then left @ middle @ right
-    else if x' = x
-    then left @ middle
-    else if x' = x + len - 1
-    then middle @ right
-    else middle)
+    [ y - 1, x' - 1
+    ; y, x' - 1
+    ; y + 1, x' - 1
+    ; y - 1, x'
+    ; y + 1, x'
+    ; y - 1, x' + 1
+    ; y, x' + 1
+    ; y + 1, x' + 1
+    ])
 ;;
 
 let is_part_num grid num_loc =
