@@ -12,13 +12,10 @@ module Syntax = struct
 end
 
 let integer =
-  let open Syntax in
-  let%map tokens =
-    take_while1 (function
-      | '0' .. '9' -> true
-      | _ -> false)
-  in
-  Int.of_string tokens
+  take_while1 (function
+    | '0' .. '9' -> true
+    | _ -> false)
+  >>| Int.of_string
 ;;
 
 let signed_integer =
