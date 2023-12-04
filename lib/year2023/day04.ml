@@ -19,11 +19,11 @@ let card_p =
 ;;
 
 let cards_p = P.sep_by1 P.end_of_line card_p
+let num_matches card = card.winners |> Set.inter card.picks |> Set.length
 
 let play counts card =
   let count = Map.find_exn counts card.id in
-  let matches = card.winners |> Set.inter card.picks |> Set.length in
-  List.range (card.id + 1) (card.id + 1 + matches)
+  List.range (card.id + 1) (card.id + 1 + num_matches card)
   |> List.fold ~init:counts ~f:(fun m key ->
     Util.Map.alter m ~key ~f:(fun c -> c + count))
 ;;
@@ -35,7 +35,7 @@ let initial_counts cards =
 let part1 input =
   input
   |> P.parse_exn cards_p
-  |> List.map ~f:(fun card -> card.winners |> Set.inter card.picks |> Set.length)
+  |> List.map ~f:num_matches
   |> List.filter ~f:(fun l -> l > 0)
   |> List.sum (module Int) ~f:(fun l -> Int.pow 2 (max 0 (l - 1)))
 ;;
