@@ -11,12 +11,13 @@ module Syntax = struct
   let ( <$ ) a p = p >>| const a
 end
 
-let integer =
+let digits =
   take_while1 (function
     | '0' .. '9' -> true
     | _ -> false)
-  >>| Int.of_string
 ;;
+
+let integer = digits >>| Int.of_string
 
 let signed_integer =
   let open Syntax in
