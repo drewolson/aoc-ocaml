@@ -1,4 +1,3 @@
-module T = Domainslib.Task
 module P = Util.Parser
 open P.Syntax
 
