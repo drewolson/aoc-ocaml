@@ -6,10 +6,14 @@ type race =
   ; distance : int
   }
 
+let data_p p =
+  let%map times = P.string "Time:" *> P.spaces *> P.sep_by1 P.spaces p <* P.end_of_line
+  and distances = P.string "Distance:" *> P.spaces *> P.sep_by1 P.spaces p in
+  times, distances
+;;
+
 let races_p =
-  let%map times =
-    P.string "Time:" *> P.spaces *> P.sep_by1 P.spaces P.integer <* P.end_of_line
-  and distances = P.string "Distance:" *> P.spaces *> P.sep_by1 P.spaces P.integer in
+  let%map times, distances = data_p P.integer in
   [ times; distances ]
   |> List.transpose_exn
   |> List.filter_map ~f:(function
@@ -18,9 +22,7 @@ let races_p =
 ;;
 
 let race_p =
-  let%map times =
-    P.string "Time:" *> P.spaces *> P.sep_by1 P.spaces P.digits <* P.end_of_line
-  and distances = P.string "Distance:" *> P.spaces *> P.sep_by1 P.spaces P.digits in
+  let%map times, distances = data_p P.digits in
   { time = times |> String.concat |> Int.of_string
   ; distance = distances |> String.concat |> Int.of_string
   }
