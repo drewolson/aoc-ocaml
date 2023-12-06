@@ -8,6 +8,8 @@ let run2023 day part input =
   | 3, 2 -> Printf.printf "%i\n" @@ Year2023.Day03.part2 input
   | 4, 1 -> Printf.printf "%i\n" @@ Year2023.Day04.part1 input
   | 4, 2 -> Printf.printf "%i\n" @@ Year2023.Day04.part2 input
+  | 5, 1 -> Printf.printf "%i\n" @@ Year2023.Day05.part1 input
+  | 5, 2 -> Printf.printf "%i\n" @@ Year2023.Day05.part2 input
   | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
 ;;
 

@@ -11,6 +11,7 @@ depends: [
   "angstrom" {= "0.15.0"}
   "core" {= "v0.16.2"}
   "core_unix" {= "v0.16.0"}
+  "domainslib" {= "0.5.1"}
   "dune" {= "3.11.1"}
   "ocaml" {= "5.1.0"}
   "ocaml-lsp-server" {= "1.16.2"}

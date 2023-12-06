@@ -13,7 +13,7 @@ let%expect_test "2023 day4 part1" =
   [%expect {| 13 |}]
 ;;
 
-let%expect_test "2023 day3 part2" =
+let%expect_test "2023 day4 part2" =
   Printf.printf "%i" @@ Year2023.Day04.part2 input;
   [%expect {| 30 |}]
 ;;

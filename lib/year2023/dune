@@ -3,6 +3,7 @@
   (libraries
     angstrom
     core
+    domainslib
     ppx_jane
     pcre
     util

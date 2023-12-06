@@ -26,6 +26,7 @@
     angstrom
     core
     core_unix
+    domainslib
     pcre
     ppx_jane
     zarith))
