@@ -6,6 +6,7 @@ type mapping =
   ; dest : int
   ; length : int
   }
+[@@deriving fields ~getters]
 
 type map =
   { name : string
@@ -66,8 +67,7 @@ let run_map ~f ~t ~m maps seed =
 
 let solve almanac =
   almanac.seeds
-  |> List.map
-       ~f:(run_map ~f:(fun m -> m.source) ~t:(fun m -> m.dest) ~m:Fn.id almanac.maps)
+  |> List.map ~f:(run_map ~f:source ~t:dest ~m:Fn.id almanac.maps)
   |> List.min_elt ~compare
   |> Option.value_exn
 ;;
@@ -75,9 +75,7 @@ let solve almanac =
 let solve' almanac =
   Sequence.unfold ~init:0 ~f:(fun i -> Some (i, i + 1))
   |> Sequence.filter ~f:(fun loc ->
-    let result =
-      run_map ~f:(fun m -> m.dest) ~t:(fun m -> m.source) ~m:List.rev almanac.maps loc
-    in
+    let result = run_map ~f:dest ~t:source ~m:List.rev almanac.maps loc in
     almanac.seeds
     |> List.chunks_of ~length:2
     |> List.exists ~f:(function
