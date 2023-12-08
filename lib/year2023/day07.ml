@@ -78,8 +78,8 @@ let hand_type hand =
   | [ 4; 1 ] -> FourOfAKind
   | [ 3; 2 ] -> FullHouse
   | 3 :: _ -> ThreeOfAKind
-  | 2 :: 2 :: __ -> TwoPair
-  | 2 :: __ -> OnePair
+  | 2 :: 2 :: _ -> TwoPair
+  | 2 :: _ -> OnePair
   | _ -> HighCard
 ;;
 
