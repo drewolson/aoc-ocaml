@@ -60,8 +60,8 @@ let solve { dirs; map } =
 ;;
 
 let solve' { dirs; map } =
-  let is_start s = s |> String.to_list_rev |> List.hd_exn |> Char.equal 'A' in
-  let is_end s = s |> String.to_list_rev |> List.hd_exn |> Char.equal 'Z' in
+  let is_start s = Pcre.pmatch ~rex:(Pcre.regexp {|A\z|}) s in
+  let is_end s = Pcre.pmatch ~rex:(Pcre.regexp {|Z\z|}) s in
   let starts = map |> Map.keys |> List.filter ~f:is_start in
   let make_move (count, steps, nodes) dir =
     let ends, rest = List.partition_tf nodes ~f:is_end in
