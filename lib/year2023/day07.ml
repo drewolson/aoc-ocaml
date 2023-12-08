@@ -69,7 +69,7 @@ let hand_type hand =
   let counts =
     hand
     |> List.sort ~compare:compare_card
-    |> List.group ~break:(fun a b -> not (compare_card a b = 0))
+    |> List.group ~break:(fun a b -> not (equal_card a b))
     |> List.map ~f:List.length
     |> List.sort ~compare:(fun a b -> -compare a b)
   in
@@ -98,7 +98,7 @@ let hand_type' hand =
   hand
   |> expand
   |> List.map ~f:hand_type
-  |> List.sort ~compare:[%compare: type']
+  |> List.sort ~compare:compare_type'
   |> List.hd_exn
 ;;
 
