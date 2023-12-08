@@ -86,12 +86,10 @@ let hand_type hand =
 let rec expand = function
   | [] -> [ [] ]
   | Jack :: rest ->
-    let%bind.List c = all_of_card
-    and h = expand rest in
-    if equal_card c Jack then [] else [ c :: h ]
-  | c :: rest ->
-    let%map.List hand = expand rest in
-    c :: hand
+    List.concat_map all_of_card ~f:(function
+      | Jack -> []
+      | c -> List.map (expand rest) ~f:(List.cons c))
+  | c :: rest -> List.map (expand rest) ~f:(List.cons c)
 ;;
 
 let hand_type' hand =
