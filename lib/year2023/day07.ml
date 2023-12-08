@@ -68,8 +68,7 @@ let hands_p = P.sep_by1 P.end_of_line hand_p
 let hand_type hand =
   let counts =
     hand
-    |> List.sort ~compare:compare_card
-    |> List.group ~break:(fun a b -> not (equal_card a b))
+    |> List.sort_and_group ~compare:compare_card
     |> List.map ~f:List.length
     |> List.sort ~compare:(fun a b -> -compare a b)
   in
@@ -100,20 +99,20 @@ let hand_type' hand =
   |> List.hd_exn
 ;;
 
-let part1 input =
+let solve input ~f =
   input
   |> P.parse_exn hands_p
-  |> List.sort ~compare:(fun (h1, _) (h2, _) ->
-    -[%compare: type' * card list] (hand_type h1, h1) (hand_type h2, h2))
+  |> List.sort ~compare:f
   |> List.mapi ~f:(fun i (_, s) -> (i + 1) * s)
   |> Util.List.sum_int
 ;;
 
+let part1 input =
+  solve input ~f:(fun (h1, _) (h2, _) ->
+    -[%compare: type' * card list] (hand_type h1, h1) (hand_type h2, h2))
+;;
+
 let part2 input =
-  input
-  |> P.parse_exn hands_p
-  |> List.sort ~compare:(fun (h1, _) (h2, _) ->
+  solve input ~f:(fun (h1, _) (h2, _) ->
     -[%compare: type' * WildCard.t list] (hand_type' h1, h1) (hand_type' h2, h2))
-  |> List.mapi ~f:(fun i (_, s) -> (i + 1) * s)
-  |> Util.List.sum_int
 ;;
