@@ -73,13 +73,12 @@ let solve' { dirs; map } =
         | L -> l
         | R -> r)
     in
-    if List.is_empty nodes' then Error steps' else Ok (count + 1, steps', nodes')
+    if List.is_empty nodes' then Error steps' else Ok (Z.add count Z.one, steps', nodes')
   in
   dirs
-  |> Sequence.fold_result ~init:(0, [], starts) ~f:make_move
+  |> Sequence.fold_result ~init:(Z.zero, [], starts) ~f:make_move
   |> Result.error
   |> Option.value_exn
-  |> List.map ~f:Z.of_int
   |> List.fold ~init:Z.one ~f:Z.lcm
   |> Z.to_string
 ;;
