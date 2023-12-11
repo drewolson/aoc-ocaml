@@ -26,12 +26,8 @@ let find_start grid =
   |> Option.value_exn
 ;;
 
-let neighbor_coords (x, y) = [ x + 1, y; x - 1, y; x, y + 1; x, y - 1 ]
-
-let neighbors grid coord =
-  coord
-  |> neighbor_coords
-  |> List.zip_exn [ E; W; S; N ]
+let neighbors grid (x, y) =
+  [ E, (x + 1, y); W, (x - 1, y); S, (x, y + 1); N, (x, y - 1) ]
   |> List.filter_map ~f:(fun (d, c) -> Map.find grid c |> Option.map ~f:(fun v -> d, v))
 ;;
 
