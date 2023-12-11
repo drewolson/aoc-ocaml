@@ -9,10 +9,9 @@ let parse input = input |> String.split_lines |> List.map ~f:String.to_list
 
 let expand amount galaxy =
   let build_counts l =
-    let open Z in
     l
     |> List.mapi ~f:(fun i line ->
-      i, if List.for_all line ~f:(Char.equal '.') then ~$amount else ~$1)
+      i, if List.for_all line ~f:(Char.equal '.') then amount else 1)
     |> IntMap.of_alist_exn
   in
   build_counts (List.transpose_exn galaxy), build_counts galaxy
@@ -35,13 +34,8 @@ let pairs grid =
 let range a b = if a < b then List.range a b else List.range b a
 
 let distance x_counts y_counts ((x1, y1), (x2, y2)) =
-  let open Z in
-  let x_dist =
-    range x1 x2 |> List.fold ~init:~$0 ~f:(fun sum x -> Map.find_exn x_counts x + sum)
-  in
-  let y_dist =
-    range y1 y2 |> List.fold ~init:~$0 ~f:(fun sum y -> Map.find_exn y_counts y + sum)
-  in
+  let x_dist = range x1 x2 |> List.sum (module Int) ~f:(Map.find_exn x_counts) in
+  let y_dist = range y1 y2 |> List.sum (module Int) ~f:(Map.find_exn y_counts) in
   x_dist + y_dist
 ;;
 
@@ -52,8 +46,7 @@ let solve amount input =
   |> to_grid
   |> pairs
   |> List.map ~f:(distance x_counts y_counts)
-  |> List.fold ~init:Z.zero ~f:Z.add
-  |> Z.to_string
+  |> Util.List.sum_int
 ;;
 
 let part1 input = solve 2 input

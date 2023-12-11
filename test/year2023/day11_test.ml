@@ -13,11 +13,11 @@ let input =
 ;;
 
 let%expect_test "2023 day11 part1" =
-  Stdio.print_endline @@ Year2023.Day11.part1 input;
+  Printf.printf "%i" @@ Year2023.Day11.part1 input;
   [%expect {| 374 |}]
 ;;
 
 let%expect_test "2023 day11 part2" =
-  Stdio.print_endline @@ Year2023.Day11.part2 input;
+  Printf.printf "%i" @@ Year2023.Day11.part2 input;
   [%expect {| 82000210 |}]
 ;;
