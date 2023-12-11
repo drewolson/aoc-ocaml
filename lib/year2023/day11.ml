@@ -8,19 +8,14 @@ module CoordMap = Map.Make (Coord)
 let parse input = input |> String.split_lines |> List.map ~f:String.to_list
 
 let expand amount galaxy =
-  let open Z in
-  let x_counts =
-    galaxy
-    |> List.transpose_exn
+  let build_counts l =
+    let open Z in
+    l
     |> List.mapi ~f:(fun i line ->
       i, if List.for_all line ~f:(Char.equal '.') then ~$amount else ~$1)
+    |> IntMap.of_alist_exn
   in
-  let y_counts =
-    galaxy
-    |> List.mapi ~f:(fun i line ->
-      i, if List.for_all line ~f:(Char.equal '.') then ~$amount else ~$1)
-  in
-  IntMap.of_alist_exn x_counts, IntMap.of_alist_exn y_counts
+  build_counts (List.transpose_exn galaxy), build_counts galaxy
 ;;
 
 let to_grid galaxy =
