@@ -16,6 +16,8 @@ let line_p =
   String.to_list tokens, counts
 ;;
 
+let input_p = P.sep_by1 P.end_of_line line_p
+
 let arrangements input =
   let cache = Hashtbl.create (module Key) in
   let rec aux input counts count =
@@ -39,7 +41,6 @@ let expand (tokens, counts) =
   , counts @ counts @ counts @ counts @ counts )
 ;;
 
-let input_p = P.sep_by1 P.end_of_line line_p
 let part1 input = input |> P.parse_exn input_p |> List.sum (module Int) ~f:arrangements
 
 let part2 input =
