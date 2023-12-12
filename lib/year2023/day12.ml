@@ -18,22 +18,20 @@ let line_p =
 
 let input_p = P.sep_by1 P.end_of_line line_p
 
-let arrangements input =
+let arrangements line =
   let cache = Hashtbl.create (module Key) in
-  let rec aux input counts count =
-    Hashtbl.find_or_add cache (input, counts, count) ~default:(fun _ ->
-      match input, counts, count with
+  let rec aux tokens counts count =
+    Hashtbl.find_or_add cache (tokens, counts, count) ~default:(fun _ ->
+      match tokens, counts, count with
       | [], [], 0 -> 1
       | [], [ c ], count when c = count -> 1
-      | '?' :: r, counts, count ->
-        aux ('.' :: r) counts count + aux ('#' :: r) counts count
-      | '.' :: inputr, counts, count when count = 0 -> aux inputr counts count
-      | '.' :: inputr, c :: countsr, count when (not (count = 0)) && count = c ->
-        aux inputr countsr 0
-      | '#' :: inputr, counts, count -> aux inputr counts (count + 1)
+      | '?' :: ts, cs, count -> aux ('.' :: ts) cs count + aux ('#' :: ts) cs count
+      | '.' :: ts, cs, count when count = 0 -> aux ts cs count
+      | '.' :: ts, c :: cs, count when (not (count = 0)) && count = c -> aux ts cs 0
+      | '#' :: ts, cs, count -> aux ts cs (count + 1)
       | _ -> 0)
   in
-  aux (fst input) (snd input) 0
+  aux (fst line) (snd line) 0
 ;;
 
 let expand (tokens, counts) =
