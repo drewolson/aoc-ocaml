@@ -33,26 +33,32 @@ let reflection_score g =
 ;;
 
 let reflection_score' g =
-  let old_axis, _ = reflection_score g |> List.hd_exn in
+  let old_axis = reflection_score g |> List.hd_exn |> fst in
   let swap = function
     | '.' -> '#'
     | _ -> '.'
   in
-  Sequence.range 0 (Array.length g)
-  |> Sequence.concat_map ~f:(fun x ->
-    Sequence.range 0 (Array.length g.(x)) |> Sequence.map ~f:(fun y -> x, y))
-  |> Sequence.find_map ~f:(fun (x, y) ->
+  let with_swap (x, y) ~f =
     let v = g.(x).(y) in
     g.(x).(y) <- swap v;
-    let result =
+    let result = f () in
+    g.(x).(y) <- v;
+    result
+  in
+  let coords =
+    let open Sequence.Let_syntax in
+    let%bind x = Sequence.range 0 (Array.length g) in
+    let%map y = Sequence.range 0 (Array.length g.(x)) in
+    x, y
+  in
+  coords
+  |> Sequence.find_map ~f:(fun coord ->
+    with_swap coord ~f:(fun _ ->
       g
       |> reflection_score
       |> List.filter_map ~f:(fun (axis, score) ->
         if equal_axis axis old_axis then None else Some score)
-      |> List.hd
-    in
-    g.(x).(y) <- v;
-    result)
+      |> List.hd))
   |> Option.value_exn
 ;;
 
