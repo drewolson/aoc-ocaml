@@ -1,7 +1,7 @@
 type axis =
   | V of int
   | H of int
-[@@deriving equal, sexp]
+[@@deriving equal]
 
 let parse input =
   input
