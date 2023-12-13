@@ -56,9 +56,8 @@ let reflection_score' g =
     with_swap coord ~f:(fun _ ->
       g
       |> reflection_score
-      |> List.filter_map ~f:(fun (axis, score) ->
-        if equal_axis axis old_axis then None else Some score)
-      |> List.hd))
+      |> List.find_map ~f:(fun (axis, score) ->
+        if equal_axis axis old_axis then None else Some score)))
   |> Option.value_exn
 ;;
 
