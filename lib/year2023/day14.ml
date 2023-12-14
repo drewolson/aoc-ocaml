@@ -2,13 +2,8 @@ module Key = struct
   type t = char list list [@@deriving sexp, compare, hash]
 end
 
-let parse input =
-  input
-  |> String.split_lines
-  |> List.map ~f:String.to_list
-  |> List.transpose_exn
-  |> List.map ~f:List.rev
-;;
+let rotate grid = grid |> List.transpose_exn |> List.map ~f:List.rev
+let parse input = input |> String.split_lines |> List.map ~f:String.to_list |> rotate
 
 let shift_rocks l =
   let aux (rocks, l) = function
@@ -29,7 +24,7 @@ let load grid =
 
 let cycle grid =
   List.fold (List.range 0 4) ~init:grid ~f:(fun acc _ ->
-    acc |> List.map ~f:shift_rocks |> List.transpose_exn |> List.map ~f:List.rev)
+    acc |> List.map ~f:shift_rocks |> rotate)
 ;;
 
 let run_cycles n grid =
