@@ -25,6 +25,7 @@
 
     angstrom
     core
+    core_bench
     core_unix
     domainslib
     pcre
