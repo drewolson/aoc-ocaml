@@ -8,11 +8,12 @@ license: "MIT"
 homepage: "https://github.com/drewolson/aoc-ocaml"
 bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
-  "angstrom" {= "0.15.0"}
+  "angstrom" {= "0.16.0"}
   "core" {= "v0.16.2"}
+  "core_bench" {= "v0.16.0"}
   "core_unix" {= "v0.16.0"}
   "domainslib" {= "0.5.1"}
-  "dune" {= "3.11.1"}
+  "dune" {= "3.12.1"}
   "ocaml" {= "5.1.0"}
   "ocaml-lsp-server" {= "1.16.2"}
   "ocamlformat" {= "0.26.1"}
