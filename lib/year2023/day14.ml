@@ -12,7 +12,7 @@ let shift_rocks l =
     | '#' -> [], ('#' :: rocks) @ l
     | _ -> rocks, l
   in
-  let rocks, l' = List.fold ~init:([], []) ~f:aux l in
+  let rocks, l' = List.fold l ~init:([], []) ~f:aux in
   rocks @ l' |> List.rev
 ;;
 
