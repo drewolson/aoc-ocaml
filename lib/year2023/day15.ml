@@ -12,12 +12,12 @@ type op =
   ; inst : inst
   }
 
-let parse input =
-  input |> String.strip |> Pcre.split ~pat:"," |> List.map ~f:String.to_list
-;;
+let parse input = input |> String.strip |> Pcre.split ~pat:","
 
 let hash token =
-  token |> List.fold ~init:0 ~f:(fun acc c -> Int.rem ((Char.to_int c + acc) * 17) 256)
+  token
+  |> String.to_list
+  |> List.fold ~init:0 ~f:(fun acc c -> Int.rem ((Char.to_int c + acc) * 17) 256)
 ;;
 
 let token_p =
@@ -31,7 +31,7 @@ let inst_p = P.choice [ Drop <$ P.char '-'; (P.char '=' *> P.integer >>| fun i -
 let op_p =
   let%map label = token_p
   and inst = inst_p in
-  { label; hash = label |> String.to_list |> hash; inst }
+  { label; hash = hash label; inst }
 ;;
 
 let ops_p = P.sep_by1 (P.char ',') op_p
