@@ -38,9 +38,9 @@ let ops_p = P.sep_by1 (P.char ',') op_p
 
 let execute map op =
   let replace items (k, v) =
-    if not (List.Assoc.mem items ~equal:String.equal k)
-    then items @ [ k, v ]
-    else List.map items ~f:(fun (k', v') -> if String.equal k k' then k, v else k', v')
+    if List.Assoc.mem items ~equal:String.equal k
+    then List.map items ~f:(fun (k', v') -> if String.equal k k' then k, v else k', v')
+    else items @ [ k, v ]
   in
   match op.inst with
   | Add i ->
