@@ -1,5 +1,3 @@
-open Core_bench
-
 let p b f =
   if b
   then ignore
@@ -73,6 +71,7 @@ let run year day part bench =
   let path = Printf.sprintf "data/%i/day%02i.txt" year day in
   let input = In_channel.read_all path in
   let maybe_bench ~f =
+    let open Core_bench in
     let name = Printf.sprintf "Year %i, Day %i, Part %i" year day part in
     if bench then Bench.bench [ Bench.Test.create ~name f ] else f ()
   in
