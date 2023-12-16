@@ -67,11 +67,13 @@ let part2 input =
   let coords = Map.keys grid in
   let max_x = coords |> List.map ~f:fst |> List.max_elt ~compare |> Option.value_exn in
   let max_y = coords |> List.map ~f:fst |> List.max_elt ~compare |> Option.value_exn in
-  let starts =
-    (List.range 0 max_y |> List.concat_map ~f:(fun y -> [ E, (-1, y); W, (max_x, y) ]))
-    @ (List.range 0 max_x |> List.concat_map ~f:(fun x -> [ S, (x, -1); N, (max_y, x) ]))
+  let h_starts =
+    List.range 0 max_y |> List.concat_map ~f:(fun y -> [ E, (-1, y); W, (max_x, y) ])
   in
-  starts
+  let v_starts =
+    List.range 0 max_x |> List.concat_map ~f:(fun x -> [ S, (x, -1); N, (max_y, x) ])
+  in
+  h_starts @ v_starts
   |> List.map ~f:(fun entry -> solve entry grid)
   |> List.max_elt ~compare
   |> Option.value_exn
