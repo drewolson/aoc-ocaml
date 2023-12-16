@@ -66,7 +66,7 @@ let part2 input =
   let grid = parse input in
   let coords = Map.keys grid in
   let max_x = coords |> List.map ~f:fst |> List.max_elt ~compare |> Option.value_exn in
-  let max_y = coords |> List.map ~f:fst |> List.max_elt ~compare |> Option.value_exn in
+  let max_y = coords |> List.map ~f:snd |> List.max_elt ~compare |> Option.value_exn in
   let h_starts =
     List.range 0 max_y |> List.concat_map ~f:(fun y -> [ E, (-1, y); W, (max_x, y) ])
   in
