@@ -39,6 +39,8 @@ let run2023 day part input b =
   | 14, 2 -> p b "%i" @@ Year2023.Day14.part2 input
   | 15, 1 -> p b "%i" @@ Year2023.Day15.part1 input
   | 15, 2 -> p b "%i" @@ Year2023.Day15.part2 input
+  | 16, 1 -> p b "%i" @@ Year2023.Day16.part1 input
+  | 16, 2 -> p b "%i" @@ Year2023.Day16.part2 input
   | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
 ;;
 
