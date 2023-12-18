@@ -8,7 +8,7 @@ type dir =
   | R
 
 module Coord = struct
-  type t = int * int [@@deriving sexp, compare, equal]
+  type t = int * int
 end
 
 type command =
@@ -16,8 +16,6 @@ type command =
   ; length : int
   ; color : string
   }
-
-module CoordSet = Set.Make (Coord)
 
 let dir_p =
   P.choice [ U <$ P.char 'U'; D <$ P.char 'D'; L <$ P.char 'L'; R <$ P.char 'R' ]
