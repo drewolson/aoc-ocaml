@@ -53,7 +53,7 @@ let shoelace points =
 
 let area commands =
   let border = List.sum (module Int) commands ~f:(fun c -> c.length) in
-  let points = commands |> List.folding_map ~init:(0, 0) ~f:dig in
+  let points = List.folding_map commands ~init:(0, 0) ~f:dig in
   shoelace points + (border / 2) + 1
 ;;
 
