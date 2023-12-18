@@ -7,10 +7,6 @@ type dir =
   | L
   | R
 
-module Coord = struct
-  type t = int * int
-end
-
 type command =
   { dir : dir
   ; length : int
