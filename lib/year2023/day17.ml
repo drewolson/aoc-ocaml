@@ -1,3 +1,5 @@
+module Pq = Pairing_heap
+
 type dir =
   | N
   | S
@@ -29,7 +31,7 @@ let solve max drop grid =
   let goal =
     grid |> Map.keys |> List.max_elt ~compare:Coord.compare |> Option.value_exn
   in
-  let queue = Pairing_heap.create ~cmp:(fun (a, _, _) (b, _, _) -> compare a b) () in
+  let queue = Pq.create ~cmp:(fun (a, _, _) (b, _, _) -> compare a b) () in
   let expand_steps dir init_loss coords =
     coords
     |> List.filter_map ~f:(fun coord ->
@@ -50,16 +52,16 @@ let solve max drop grid =
       List.drop up drop @ List.drop down drop
   in
   let rec loop visited =
-    match Pairing_heap.pop_exn queue with
+    match Pq.pop_exn queue with
     | loss, coord, _ when Coord.equal coord goal -> loss
     | _, coord, dir when Set.mem visited (coord, dir) -> loop visited
     | loss, coord, dir ->
       next_steps loss coord dir
       |> List.filter ~f:(fun (_, coord, dir) -> not @@ Set.mem visited (coord, dir))
-      |> List.iter ~f:(Pairing_heap.add queue);
+      |> List.iter ~f:(Pq.add queue);
       loop (Set.add visited (coord, dir))
   in
-  next_steps 0 (0, 0) N @ next_steps 0 (0, 0) E |> List.iter ~f:(Pairing_heap.add queue);
+  next_steps 0 (0, 0) N @ next_steps 0 (0, 0) E |> List.iter ~f:(Pq.add queue);
   loop NodeSet.empty
 ;;
 
