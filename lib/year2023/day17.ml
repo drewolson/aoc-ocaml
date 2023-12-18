@@ -29,36 +29,35 @@ let solve max drop grid =
   let goal =
     grid |> Map.keys |> List.max_elt ~compare:Coord.compare |> Option.value_exn
   in
-  let cmp_entry (a, _, _) (b, _, _) = compare a b in
-  let queue = Pairing_heap.create ~cmp:cmp_entry () in
-  let expand_steps d l cs =
-    cs
-    |> List.filter_map ~f:(fun c ->
-      let%map.Option s = Map.find grid c in
-      s, c, d)
-    |> List.fold ~init:([], l) ~f:(fun (cs, s) (l, c, d) -> (s + l, c, d) :: cs, s + l)
-    |> fst
-    |> List.rev
+  let queue = Pairing_heap.create ~cmp:(fun (a, _, _) (b, _, _) -> compare a b) () in
+  let expand_steps dir init_loss coords =
+    coords
+    |> List.filter_map ~f:(fun coord ->
+      let%map.Option loss = Map.find grid coord in
+      loss, coord)
+    |> List.folding_map ~init:init_loss ~f:(fun sum (loss, coord) ->
+      let loss' = sum + loss in
+      loss', (loss', coord, dir))
   in
-  let next_steps l (x, y) = function
+  let next_steps loss (x, y) = function
     | N | S ->
-      let left = range |> List.map ~f:(fun i -> x - i, y) |> expand_steps W l in
-      let right = range |> List.map ~f:(fun i -> x + i, y) |> expand_steps E l in
+      let left = range |> List.map ~f:(fun i -> x - i, y) |> expand_steps W loss in
+      let right = range |> List.map ~f:(fun i -> x + i, y) |> expand_steps E loss in
       List.drop left drop @ List.drop right drop
     | E | W ->
-      let up = range |> List.map ~f:(fun i -> x, y - i) |> expand_steps N l in
-      let down = range |> List.map ~f:(fun i -> x, y + i) |> expand_steps S l in
+      let up = range |> List.map ~f:(fun i -> x, y - i) |> expand_steps N loss in
+      let down = range |> List.map ~f:(fun i -> x, y + i) |> expand_steps S loss in
       List.drop up drop @ List.drop down drop
   in
   let rec loop visited =
     match Pairing_heap.pop_exn queue with
-    | l, c, _ when Coord.equal c goal -> l
-    | _, c, d when Set.mem visited (c, d) -> loop visited
-    | l, c, d ->
-      next_steps l c d
-      |> List.filter ~f:(fun (_, c, d) -> not @@ Set.mem visited (c, d))
+    | loss, coord, _ when Coord.equal coord goal -> loss
+    | _, coord, dir when Set.mem visited (coord, dir) -> loop visited
+    | loss, coord, dir ->
+      next_steps loss coord dir
+      |> List.filter ~f:(fun (_, coord, dir) -> not @@ Set.mem visited (coord, dir))
       |> List.iter ~f:(Pairing_heap.add queue);
-      loop (Set.add visited (c, d))
+      loop (Set.add visited (coord, dir))
   in
   next_steps 0 (0, 0) N @ next_steps 0 (0, 0) E |> List.iter ~f:(Pairing_heap.add queue);
   loop NodeSet.empty
