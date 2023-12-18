@@ -11,6 +11,7 @@ depends: [
   "angstrom" {= "0.16.0"}
   "core" {= "v0.16.2"}
   "core_bench" {= "v0.16.0"}
+  "core_kernel" {= "v0.16.0"}
   "core_unix" {= "v0.16.0"}
   "domainslib" {= "0.5.1"}
   "dune" {= "3.12.1"}
