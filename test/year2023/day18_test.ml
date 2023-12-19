@@ -16,12 +16,6 @@ U 2 (#7a21e3)
 |}
 ;;
 
-let input2 = {|R 2 (#70c710)
-D 2 (#0dc571)
-L 2 (#5713f0)
-U 2 (#5713f0)
-|}
-
 let%expect_test "2023 day18 part1" =
   Printf.printf "%i" @@ Year2023.Day18.part1 input;
   [%expect {| 62 |}]
