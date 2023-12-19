@@ -41,7 +41,7 @@ type part =
   ; s : int
   }
 
-type range = int * int [@@deriving sexp]
+type range = int * int
 
 type template =
   { x' : range
@@ -49,7 +49,6 @@ type template =
   ; a' : range
   ; s' : range
   }
-[@@deriving sexp]
 
 type input =
   { workflows : workflow StrMap.t
