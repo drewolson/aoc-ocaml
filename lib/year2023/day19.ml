@@ -39,13 +39,11 @@ type part =
   ; s : int
   }
 
-type range = int * int
-
-type template =
-  { x' : range
-  ; m' : range
-  ; a' : range
-  ; s' : range
+type qpart =
+  { x' : int * int
+  ; m' : int * int
+  ; a' : int * int
+  ; s' : int * int
   }
 
 type input =
@@ -141,49 +139,49 @@ let solve { workflows; parts } =
 
 let solve' { workflows } =
   let init_workflow = init workflows in
-  let init_template = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
+  let init_qpart = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
   let get_attr { x'; m'; a'; s' } = function
     | X -> x'
     | M -> m'
     | A -> a'
     | S -> s'
   in
-  let set_attr template attr v =
+  let set_attr qpart attr v =
     match attr with
-    | X -> { template with x' = v }
-    | M -> { template with m' = v }
-    | A -> { template with a' = v }
-    | S -> { template with s' = v }
+    | X -> { qpart with x' = v }
+    | M -> { qpart with m' = v }
+    | A -> { qpart with a' = v }
+    | S -> { qpart with s' = v }
   in
-  let rec move_dest template = function
+  let rec move_dest qpart = function
     | Name dest ->
       let workflow' = Map.find_exn workflows dest in
-      results template workflow'.rules
-    | End Accept -> [ template ]
+      results qpart workflow'.rules
+    | End Accept -> [ qpart ]
     | End Reject -> []
-  and results template = function
-    | Move dest :: t -> move_dest template dest
+  and results qpart = function
+    | Move dest :: t -> move_dest qpart dest
     | LT { attr; n; dest } :: t ->
-      let s, e = get_attr template attr in
+      let s, e = get_attr qpart attr in
       if s >= n
-      then results template t
+      then results qpart t
       else (
-        let t1 = set_attr template attr (min s (n - 1), min e (n - 1)) in
-        let t2 = set_attr template attr (max s n, max e n) in
+        let t1 = set_attr qpart attr (min s (n - 1), min e (n - 1)) in
+        let t2 = set_attr qpart attr (max s n, max e n) in
         move_dest t1 dest @ results t2 t)
     | GT { attr; n; dest } :: t ->
-      let s, e = get_attr template attr in
+      let s, e = get_attr qpart attr in
       if e <= n
-      then results template t
+      then results qpart t
       else (
-        let t1 = set_attr template attr (max s (n + 1), max e (n + 1)) in
-        let t2 = set_attr template attr (min s n, min e n) in
+        let t1 = set_attr qpart attr (max s (n + 1), max e (n + 1)) in
+        let t2 = set_attr qpart attr (min s n, min e n) in
         move_dest t1 dest @ results t2 t)
     | [] -> []
   in
   let vals (s, e) = e - s + 1 in
   let totals { x'; m'; a'; s' } = vals x' * vals m' * vals a' * vals s' in
-  results init_template init_workflow.rules |> List.sum (module Int) ~f:totals
+  results init_qpart init_workflow.rules |> List.sum (module Int) ~f:totals
 ;;
 
 let part1 input = input |> P.parse_exn input_p |> solve
