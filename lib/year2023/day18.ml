@@ -67,7 +67,7 @@ let from_hex command =
     | 2 -> L
     | _ -> U
   in
-  { length; dir; color = "" }
+  { command with length; dir }
 ;;
 
 let part1 input = input |> P.parse_exn commands_p |> area
