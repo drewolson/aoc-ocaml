@@ -16,17 +16,15 @@ type dest =
   | Name of string
   | End of state
 
+type fields =
+  { attr : attr
+  ; n : int
+  ; dest : dest
+  }
+
 type rule =
-  | LT of
-      { attr : attr
-      ; n : int
-      ; dest : dest
-      }
-  | GT of
-      { attr : attr
-      ; n : int
-      ; dest : dest
-      }
+  | LT of fields
+  | GT of fields
   | Move of dest
 
 type workflow =
