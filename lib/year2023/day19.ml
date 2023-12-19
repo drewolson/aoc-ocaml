@@ -115,7 +115,7 @@ let input_p =
 let init workflows = Map.find_exn workflows "in"
 
 let solve { workflows; parts } =
-  let of_attr { x; m; a; s } = function
+  let get_attr { x; m; a; s } = function
     | X -> x
     | M -> m
     | A -> a
@@ -123,8 +123,8 @@ let solve { workflows; parts } =
   in
   let exec_rule part = function
     | Move dest -> Some dest
-    | LT { attr; n; dest } when of_attr part attr < n -> Some dest
-    | GT { attr; n; dest } when of_attr part attr > n -> Some dest
+    | LT { attr; n; dest } when get_attr part attr < n -> Some dest
+    | GT { attr; n; dest } when get_attr part attr > n -> Some dest
     | _ -> None
   in
   let rec is_accepted workflow part =
@@ -143,7 +143,7 @@ let solve { workflows; parts } =
 
 let solve' { workflows } =
   let start = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
-  let of_attr { x'; m'; a'; s' } = function
+  let get_attr { x'; m'; a'; s' } = function
     | X -> x'
     | M -> m'
     | A -> a'
@@ -165,7 +165,7 @@ let solve' { workflows } =
   and results template = function
     | Move dest :: t -> move_dest template dest
     | LT { attr; n; dest } :: t ->
-      let s, e = of_attr template attr in
+      let s, e = get_attr template attr in
       if s >= n
       then results template t
       else (
@@ -173,7 +173,7 @@ let solve' { workflows } =
         let t2 = set_attr template attr (max s n, max e n) in
         move_dest t1 dest @ results t2 t)
     | GT { attr; n; dest } :: t ->
-      let s, e = of_attr template attr in
+      let s, e = get_attr template attr in
       if e <= n
       then results template t
       else (
