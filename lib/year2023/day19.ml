@@ -140,7 +140,8 @@ let solve { workflows; parts } =
 ;;
 
 let solve' { workflows } =
-  let start = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
+  let init_workflow = init workflows in
+  let init_template = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
   let get_attr { x'; m'; a'; s' } = function
     | X -> x'
     | M -> m'
@@ -180,9 +181,9 @@ let solve' { workflows } =
         move_dest t1 dest @ results t2 t)
     | [] -> []
   in
-  let vals (s, e) = if s = e then 0 else e - s + 1 in
+  let vals (s, e) = e - s + 1 in
   let totals { x'; m'; a'; s' } = vals x' * vals m' * vals a' * vals s' in
-  results start (init workflows).rules |> List.sum (module Int) ~f:totals
+  results init_template init_workflow.rules |> List.sum (module Int) ~f:totals
 ;;
 
 let part1 input = input |> P.parse_exn input_p |> solve
