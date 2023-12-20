@@ -166,17 +166,17 @@ let solve' { workflows } =
       if s >= n
       then results qpart t
       else (
-        let t1 = set_attr qpart attr (min s (n - 1), min e (n - 1)) in
-        let t2 = set_attr qpart attr (max s n, max e n) in
-        move_dest t1 dest @ results t2 t)
+        let q1 = set_attr qpart attr (min s (n - 1), min e (n - 1)) in
+        let q2 = set_attr qpart attr (max s n, max e n) in
+        move_dest q1 dest @ results q2 t)
     | GT { attr; n; dest } :: t ->
       let s, e = get_attr qpart attr in
       if e <= n
       then results qpart t
       else (
-        let t1 = set_attr qpart attr (max s (n + 1), max e (n + 1)) in
-        let t2 = set_attr qpart attr (min s n, min e n) in
-        move_dest t1 dest @ results t2 t)
+        let q1 = set_attr qpart attr (max s (n + 1), max e (n + 1)) in
+        let q2 = set_attr qpart attr (min s n, min e n) in
+        move_dest q1 dest @ results q2 t)
     | [] -> []
   in
   let vals (s, e) = e - s + 1 in
