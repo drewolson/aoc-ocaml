@@ -73,7 +73,7 @@ let solve almanac =
 ;;
 
 let solve' almanac =
-  Sequence.unfold ~init:0 ~f:(fun i -> Some (i, i + 1))
+  Util.Sequence.nats
   |> Sequence.filter ~f:(fun loc ->
     let result = run_map ~f:dest ~t:source ~m:List.rev almanac.maps loc in
     almanac.seeds

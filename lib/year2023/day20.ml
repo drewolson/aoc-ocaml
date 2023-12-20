@@ -183,17 +183,15 @@ let solve' mods =
          let pulses = List.map outputs ~f:(fun n -> n, pulse', name) in
          send_pulse mods' n (t @ pulses))
   in
-  Sequence.unfold ~init:1 ~f:(fun i -> Some (i, i + 1))
-  |> Sequence.fold_result ~init:(mods, StrMap.empty) ~f:(fun (mods, ns) c ->
+  Util.Sequence.nats
+  |> Util.Sequence.fold_result_exn ~init:(mods, StrMap.empty) ~f:(fun (mods, ns) c ->
     let mods', maybe_name = send_pulse mods None [ "broadcaster", Low, "button" ] in
     let ns' =
       maybe_name
-      |> Option.map ~f:(fun name -> Map.add_exn ns ~key:name ~data:c)
+      |> Option.map ~f:(fun name -> Map.add_exn ns ~key:name ~data:(c + 1))
       |> Option.value ~default:ns
     in
     if Map.length ns' = 4 then Error (Map.data ns') else Ok (mods', ns'))
-  |> Result.error
-  |> Option.value_exn
   |> List.map ~f:Z.of_int
   |> List.fold ~init:Z.one ~f:Z.lcm
   |> Z.to_int

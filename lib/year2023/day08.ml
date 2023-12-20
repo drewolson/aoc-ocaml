@@ -53,10 +53,7 @@ let solve { dirs; map } =
       | L -> Ok (count + 1, l)
       | R -> Ok (count + 1, r))
   in
-  dirs
-  |> Sequence.fold_result ~init:(0, "AAA") ~f:make_move
-  |> Result.error
-  |> Option.value_exn
+  dirs |> Util.Sequence.fold_result_exn ~init:(0, "AAA") ~f:make_move
 ;;
 
 let solve' { dirs; map } =
@@ -76,9 +73,7 @@ let solve' { dirs; map } =
     if List.is_empty nodes' then Error steps' else Ok (Z.add count Z.one, steps', nodes')
   in
   dirs
-  |> Sequence.fold_result ~init:(Z.zero, [], starts) ~f:make_move
-  |> Result.error
-  |> Option.value_exn
+  |> Util.Sequence.fold_result_exn ~init:(Z.zero, [], starts) ~f:make_move
   |> List.fold ~init:Z.one ~f:Z.lcm
   |> Z.to_int
 ;;
