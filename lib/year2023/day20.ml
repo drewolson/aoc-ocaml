@@ -5,7 +5,7 @@ module StrMap = Map.Make (String)
 type pulse =
   | High
   | Low
-[@@deriving equal, sexp]
+[@@deriving equal]
 
 type state =
   | On
