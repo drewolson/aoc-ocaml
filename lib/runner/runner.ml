@@ -24,7 +24,7 @@ let run2023 day part input b =
   | 7, 1 -> p b "%i" @@ Year2023.Day07.part1 input
   | 7, 2 -> p b "%i" @@ Year2023.Day07.part2 input
   | 8, 1 -> p b "%i" @@ Year2023.Day08.part1 input
-  | 8, 2 -> p b "%s" @@ Year2023.Day08.part2 input
+  | 8, 2 -> p b "%i" @@ Year2023.Day08.part2 input
   | 9, 1 -> p b "%i" @@ Year2023.Day09.part1 input
   | 9, 2 -> p b "%i" @@ Year2023.Day09.part2 input
   | 10, 1 -> p b "%i" @@ Year2023.Day10.part1 input
@@ -48,7 +48,7 @@ let run2023 day part input b =
   | 19, 1 -> p b "%i" @@ Year2023.Day19.part1 input
   | 19, 2 -> p b "%i" @@ Year2023.Day19.part2 input
   | 20, 1 -> p b "%i" @@ Year2023.Day20.part1 input
-  | 20, 2 -> p b "%s" @@ Year2023.Day20.part2 input
+  | 20, 2 -> p b "%i" @@ Year2023.Day20.part2 input
   | day, part -> failwith @@ Printf.sprintf "Unknown day %i and part %i" day part
 ;;
 

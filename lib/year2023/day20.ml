@@ -196,7 +196,7 @@ let solve' mods =
   |> Option.value_exn
   |> List.map ~f:Z.of_int
   |> List.fold ~init:Z.one ~f:Z.lcm
-  |> Z.to_string
+  |> Z.to_int
 ;;
 
 let part1 input = input |> parse |> solve

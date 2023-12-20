@@ -80,7 +80,7 @@ let solve' { dirs; map } =
   |> Result.error
   |> Option.value_exn
   |> List.fold ~init:Z.one ~f:Z.lcm
-  |> Z.to_string
+  |> Z.to_int
 ;;
 
 let part1 input = input |> P.parse_exn input_p |> solve

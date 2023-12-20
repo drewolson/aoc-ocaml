@@ -40,6 +40,6 @@ let%expect_test "2023 day8 part1" =
 ;;
 
 let%expect_test "2023 day8 part2" =
-  Printf.printf "%s" @@ Year2023.Day08.part2 input3;
+  Printf.printf "%i" @@ Year2023.Day08.part2 input3;
   [%expect {| 6 |}]
 ;;
