@@ -37,19 +37,14 @@ let solve entry grid =
   let move_beam (dir, coord) =
     let coord' = move dir coord in
     match Map.find grid coord', dir with
-    | Some '.', dir -> [ dir, coord' ]
-    | Some '/', N -> [ E, coord' ]
-    | Some '/', S -> [ W, coord' ]
-    | Some '/', E -> [ N, coord' ]
-    | Some '/', W -> [ S, coord' ]
-    | Some '\\', N -> [ W, coord' ]
-    | Some '\\', S -> [ E, coord' ]
-    | Some '\\', E -> [ S, coord' ]
-    | Some '\\', W -> [ N, coord' ]
-    | Some '-', W | Some '-', E -> [ dir, coord' ]
+    | Some '/', N | Some '\\', S -> [ E, coord' ]
+    | Some '/', S | Some '\\', N -> [ W, coord' ]
+    | Some '/', E | Some '\\', W -> [ N, coord' ]
+    | Some '\\', E | Some '/', W -> [ S, coord' ]
     | Some '-', N | Some '-', S -> [ E, coord'; W, coord' ]
     | Some '|', W | Some '|', E -> [ N, coord'; S, coord' ]
-    | Some '|', N | Some '|', S -> [ dir, coord' ]
+    | Some '|', N | Some '|', S | Some '-', W | Some '-', E | Some '.', _ ->
+      [ dir, coord' ]
     | _ -> []
   in
   let rec step visited = function
