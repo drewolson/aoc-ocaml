@@ -4,3 +4,10 @@ let replicate a ~n = Core.List.init n ~f:(const a)
 let sum_int l = Core.List.sum (module Int) ~f:Core.Fn.id l
 let take l ~n = Core.List.take l n
 let drop l ~n = Core.List.drop l n
+
+let rec zip' l r =
+  match l, r with
+  | [], _ -> []
+  | _, [] -> []
+  | a :: ar, b :: br -> (a, b) :: zip' ar br
+;;
