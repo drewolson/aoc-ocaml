@@ -28,7 +28,7 @@ let parse input =
   grid, start, finish
 ;;
 
-let longest_path grid start finish =
+let longest_path (grid, start, finish) =
   let neighbors prev (x, y) =
     [ x + 1, y, '<'; x - 1, y, '>'; x, y + 1, '^'; x, y - 1, 'v' ]
     |> List.filter ~f:(fun (x, y, _) -> not (Coord.equal (x, y) prev))
@@ -53,7 +53,7 @@ let longest_path grid start finish =
   aux 0 start start
 ;;
 
-let make_graph grid start finish =
+let make_graph (grid, start, finish) =
   let neighbors visited (x, y) =
     [ x + 1, y; x - 1, y; x, y + 1; x, y - 1 ]
     |> List.filter ~f:(fun c -> not (Set.mem visited c))
@@ -79,12 +79,15 @@ let make_graph grid start finish =
     |> CoordSet.of_list
     |> Set.union (CoordSet.of_list [ start; finish ])
   in
-  Set.fold nodes ~init:CoordMap.empty ~f:(fun acc node ->
-    let ns = find_neighbors (Set.remove nodes node) 0 (CoordSet.singleton node) node in
-    Map.add_exn acc ~key:node ~data:ns)
+  let graph =
+    Set.fold nodes ~init:CoordMap.empty ~f:(fun acc node ->
+      let ns = find_neighbors (Set.remove nodes node) 0 (CoordSet.singleton node) node in
+      Map.add_exn acc ~key:node ~data:ns)
+  in
+  graph, start, finish
 ;;
 
-let longest_path' graph start finish =
+let longest_path' (graph, start, finish) =
   let rec aux steps visited = function
     | node when Coord.equal node finish -> steps
     | node ->
@@ -98,13 +101,5 @@ let longest_path' graph start finish =
   aux 0 (CoordSet.singleton start) start
 ;;
 
-let part1 input =
-  let grid, start, finish = parse input in
-  longest_path grid start finish
-;;
-
-let part2 input =
-  let grid, start, finish = parse input in
-  let graph = make_graph grid start finish in
-  longest_path' graph start finish
-;;
+let part1 input = input |> parse |> longest_path
+let part2 input = input |> parse |> make_graph |> longest_path'

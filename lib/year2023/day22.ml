@@ -8,12 +8,8 @@ type coord =
   }
 [@@deriving sexp, equal, compare]
 
-module Coord = struct
-  type t = coord [@@deriving sexp, equal, compare]
-end
-
 module Brick = struct
-  type t = int * Coord.t * Coord.t [@@deriving sexp, equal, compare]
+  type t = int * coord * coord [@@deriving sexp, equal, compare]
 end
 
 module BrickSet = Set.Make (Brick)
@@ -46,15 +42,16 @@ let will_collide (_, a1, a2) (_, b1, b2) =
   is_overlap (a1.x, a2.x) (b1.x, b2.x) && is_overlap (a1.y, a2.y) (b1.y, b2.y)
 ;;
 
+let first_collision_z settled brick =
+  settled
+  |> Set.to_list
+  |> List.filter ~f:(will_collide brick)
+  |> List.map ~f:(fun (_, a, b) -> max a.z b.z)
+  |> List.max_elt ~compare
+  |> Option.value ~default:0
+;;
+
 let fall bricks =
-  let first_collision_z settled brick =
-    settled
-    |> Set.to_list
-    |> List.filter ~f:(will_collide brick)
-    |> List.map ~f:(fun (_, a, b) -> max a.z b.z)
-    |> List.max_elt ~compare
-    |> Option.value ~default:0
-  in
   bricks
   |> Set.to_list
   |> List.sort ~compare:(fun (_, a1, a2) (_, b1, b2) ->
@@ -84,7 +81,5 @@ let count_drops bricks =
          Set.diff (fall bricks') bricks' |> Set.length)
 ;;
 
-let solve bricks = bricks |> fall |> count_free
-let solve' bricks = bricks |> fall |> count_drops
-let part1 input = input |> P.parse_exn bricks_p |> solve
-let part2 input = input |> P.parse_exn bricks_p |> solve'
+let part1 input = input |> P.parse_exn bricks_p |> fall |> count_free
+let part2 input = input |> P.parse_exn bricks_p |> fall |> count_drops
