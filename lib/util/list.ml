@@ -11,3 +11,8 @@ let rec zip' l r =
   | _, [] -> []
   | a :: ar, b :: br -> (a, b) :: zip' ar br
 ;;
+
+let rec pairs = function
+  | a :: rest -> Core.List.map rest ~f:(fun b -> a, b) @ pairs rest
+  | [] -> []
+;;
