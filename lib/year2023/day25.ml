@@ -52,15 +52,15 @@ let solve graph =
     else (
       let n = Random.int le in
       let a, b = List.nth_exn edges n in
-      let node = a ^ b in
+      let ab = a ^ b in
       let edges' =
         List.filter_map edges ~f:(function
           | e when Edge.equal e (a, b) -> None
-          | x, y when Node.equal x a || Node.equal x b -> Some (make_edge node y)
-          | x, y when Node.equal y a || Node.equal y b -> Some (make_edge x node)
+          | x, y when Node.equal x a || Node.equal x b -> Some (make_edge ab y)
+          | x, y when Node.equal y a || Node.equal y b -> Some (make_edge x ab)
           | e -> Some e)
       in
-      let nodes' = Set.add (Set.remove (Set.remove nodes a) b) node in
+      let nodes' = Set.add (Set.remove (Set.remove nodes a) b) ab in
       aux (nodes', edges'))
   in
   Util.Sequence.nats |> Sequence.find_map ~f:(fun _ -> aux graph) |> Option.value_exn
