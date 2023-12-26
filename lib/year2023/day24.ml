@@ -71,21 +71,20 @@ let make_matrix stones ~f =
 
 let elim m =
   let l = Array.length m in
-  List.range 0 l
-  |> List.iter ~f:(fun i ->
+  for i = 0 to l - 1 do
     let t = m.(i).(i) in
     m.(i) <- Array.map m.(i) ~f:(fun x -> Q.(x / t));
-    List.range (i + 1) l
-    |> List.iter ~f:(fun j ->
+    for j = i + 1 to l - 1 do
       let t = m.(j).(i) in
-      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))));
-  List.range 0 l
-  |> List.rev
-  |> List.iter ~f:(fun i ->
-    List.range 0 i
-    |> List.iter ~f:(fun j ->
+      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))
+    done
+  done;
+  for i = l - 1 downto 0 do
+    for j = 0 to i - 1 do
       let t = m.(j).(i) in
-      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))));
+      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))
+    done
+  done;
   Array.map m ~f:(fun r -> Array.last r)
 ;;
 
