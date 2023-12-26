@@ -9,8 +9,8 @@ module Edge = struct
   type t = Node.t * Node.t [@@deriving sexp, equal, compare]
 end
 
-module EdgeSet = Set.Make (Edge)
 module NodeSet = Set.Make (Node)
+module EdgeSet = Set.Make (Edge)
 
 let token_p =
   P.take_while (function
@@ -30,7 +30,7 @@ let make_edge a b = if String.compare a b < 0 then a, b else b, a
 let make_graph lines =
   let aux (ns, es) (n, conns) =
     let nodes = n :: conns in
-    let edges = conns |> List.map ~f:(fun c -> make_edge n c) in
+    let edges = conns |> List.map ~f:(make_edge n) in
     let ns' = List.fold nodes ~init:ns ~f:Set.add in
     let es' = List.fold edges ~init:es ~f:Set.add in
     ns', es'
@@ -47,7 +47,7 @@ let solve graph =
     then
       if le = 3
       then
-        Some (Set.fold nodes ~init:1 ~f:(fun sum node -> sum * (String.length node / 3)))
+        Some (Set.fold nodes ~init:1 ~f:(fun acc node -> acc * (String.length node / 3)))
       else None
     else (
       let n = Random.int le in
