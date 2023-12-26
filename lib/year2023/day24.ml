@@ -60,6 +60,35 @@ let in_test_area target (h1, h2) =
     in_range target x && in_range target y && in_future h1 h2 x y)
 ;;
 
+let make_matrix stones ~f =
+  let m = List.map stones ~f in
+  List.take m 4
+  |> List.map ~f:(fun d ->
+    List.zip_exn d (List.last_exn m) |> List.map ~f:(fun (a, b) -> Q.(a - b)))
+  |> List.map ~f:Array.of_list
+  |> Array.of_list
+;;
+
+let elim m =
+  let l = Array.length m in
+  List.range 0 l
+  |> List.iter ~f:(fun i ->
+    let t = m.(i).(i) in
+    m.(i) <- Array.map m.(i) ~f:(fun x -> Q.(x / t));
+    List.range (i + 1) l
+    |> List.iter ~f:(fun j ->
+      let t = m.(j).(i) in
+      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))));
+  List.range 0 l
+  |> List.rev
+  |> List.iter ~f:(fun i ->
+    List.range 0 i
+    |> List.iter ~f:(fun j ->
+      let t = m.(j).(i) in
+      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))));
+  Array.map m ~f:(fun r -> Array.last r)
+;;
+
 let part1 target input =
   input
   |> P.parse_exn stones_p
@@ -68,4 +97,19 @@ let part1 target input =
   |> List.length
 ;;
 
-let part2 _ = 2
+(* all credit to https://github.com/tckmn/polyaoc-2023/blob/97689dc6b5ff38c557cd885b10be425e14928958/24/rb/24.rb#L22 *)
+let part2 input =
+  let open Q in
+  let stones = P.parse_exn stones_p input in
+  let a =
+    make_matrix stones ~f:(fun h ->
+      [ ~-(h.dy); h.dx; h.y; ~-(h.x); (h.y * h.dx) - (h.x * h.dy) ])
+  in
+  let b =
+    make_matrix stones ~f:(fun h ->
+      [ ~-(h.dy); h.dz; h.y; ~-(h.z); (h.y * h.dz) - (h.z * h.dy) ])
+  in
+  let r1 = elim a in
+  let r2 = elim b in
+  r1.(0) + r1.(1) + r2.(0) |> Q.to_int
+;;

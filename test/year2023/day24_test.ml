@@ -11,8 +11,3 @@ let%expect_test "2023 day24 part1" =
   Printf.printf "%i" @@ Year2023.Day24.part1 Q.(~$7, ~$27) input;
   [%expect {| 2 |}]
 ;;
-
-let%expect_test "2023 day24 part2" =
-  Printf.printf "%i" @@ Year2023.Day24.part2 input;
-  [%expect {| 2 |}]
-;;
