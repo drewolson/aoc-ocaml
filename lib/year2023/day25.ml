@@ -40,17 +40,12 @@ let make_graph lines =
 ;;
 
 let solve graph =
-  let rec aux (nodes, edges) =
-    let ln = Set.length nodes in
-    let le = List.length edges in
-    if ln = 2
-    then
-      if le = 3
-      then
-        Some (Set.fold nodes ~init:1 ~f:(fun acc node -> acc * (String.length node / 3)))
-      else None
-    else (
-      let n = Random.int le in
+  let rec aux = function
+    | nodes, edges when Set.length nodes = 2 && List.length edges = 3 ->
+      Some (Set.fold nodes ~init:1 ~f:(fun acc node -> acc * (String.length node / 3)))
+    | nodes, _ when Set.length nodes = 2 -> None
+    | nodes, edges ->
+      let n = edges |> List.length |> Random.int in
       let a, b = List.nth_exn edges n in
       let ab = a ^ b in
       let edges' =
@@ -61,7 +56,7 @@ let solve graph =
           | e -> Some e)
       in
       let nodes' = Set.add (Set.remove (Set.remove nodes a) b) ab in
-      aux (nodes', edges'))
+      aux (nodes', edges')
   in
   Util.Sequence.nats |> Sequence.find_map ~f:(fun _ -> aux graph) |> Option.value_exn
 ;;
