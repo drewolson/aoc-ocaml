@@ -31,8 +31,8 @@ let make_graph lines =
   let aux (ns, es) (n, conns) =
     let nodes = n :: conns in
     let edges = conns |> List.map ~f:(fun c -> make_edge n c) in
-    let ns' = List.fold nodes ~init:ns ~f:(fun acc n -> Set.add acc n) in
-    let es' = List.fold edges ~init:es ~f:(fun acc e -> Set.add acc e) in
+    let ns' = List.fold nodes ~init:ns ~f:Set.add in
+    let es' = List.fold edges ~init:es ~f:Set.add in
     ns', es'
   in
   let nodes, edges = List.fold lines ~init:(NodeSet.empty, EdgeSet.empty) ~f:aux in
