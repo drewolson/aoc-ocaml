@@ -35,5 +35,5 @@ dune test
 ## Create Local Switch
 
 ```
-opam switch create ./ 5.1.0 --deps-only
+opam switch create ./ ocaml-base-compiler.5.1.0 --deps-only
 ```
