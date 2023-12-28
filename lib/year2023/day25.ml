@@ -30,7 +30,7 @@ let make_edge a b = if String.compare a b < 0 then a, b else b, a
 let make_graph lines =
   let aux (ns, es) (n, conns) =
     let nodes = n :: conns in
-    let edges = conns |> List.map ~f:(make_edge n) in
+    let edges = List.map conns ~f:(make_edge n) in
     let ns' = List.fold nodes ~init:ns ~f:Set.add in
     let es' = List.fold edges ~init:es ~f:Set.add in
     ns', es'
