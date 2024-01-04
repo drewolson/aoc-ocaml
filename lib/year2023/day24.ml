@@ -38,21 +38,21 @@ let to_line { x; y; dx; dy } =
 ;;
 
 let in_test_area target (h1, h2) =
-  let in_range (a, b) v = Q.compare a v <= 0 && Q.compare v b <= 0 in
-  let sign f = Q.compare f Q.zero in
-  let in_future h1 h2 x y =
-    sign Q.(x - h1.x) = sign h1.dx
-    && sign Q.(y - h1.y) = sign h1.dy
-    && sign Q.(x - h2.x) = sign h2.dx
-    && sign Q.(y - h2.y) = sign h2.dy
-  in
   let open Q in
+  let in_range (a, b) v = a <= v && v <= b in
+  let sign f = ~$(compare f ~$0) in
+  let in_future h1 h2 x y =
+    sign (x - h1.x) = sign h1.dx
+    && sign (y - h1.y) = sign h1.dy
+    && sign (x - h2.x) = sign h2.dx
+    && sign (y - h2.y) = sign h2.dy
+  in
   let l1 = to_line h1 in
   let l2 = to_line h2 in
   let d = (l1.a * l2.b) - (l1.b * l2.a) in
   let dx = (l1.c * l2.b) - (l1.b * l2.c) in
   let dy = (l1.a * l2.c) - (l1.c * l2.a) in
-  if Q.equal d Q.zero
+  if d = ~$0
   then false
   else (
     let x = dx / d in
