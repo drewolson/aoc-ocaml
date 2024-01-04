@@ -19,8 +19,8 @@ let token_p =
 ;;
 
 let line_p =
-  let%map node = token_p <* P.string ": "
-  and nodes = P.sep_by1 (P.char ' ') token_p in
+  let+ node = token_p <* P.string ": "
+  and+ nodes = P.sep_by1 (P.char ' ') token_p in
   node, nodes
 ;;
 

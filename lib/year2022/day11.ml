@@ -25,12 +25,12 @@ let div_test_p = P.string "divisible by " *> P.integer >>| Z.of_int
 let throw_p = P.string "throw to monkey " *> P.integer
 
 let monkey_p =
-  let%map id = P.string "Monkey " *> P.integer <* P.string ":" <* P.end_of_line
-  and items = P.string "  Starting items: " *> items_p <* P.end_of_line
-  and op = P.string "  Operation: " *> op_p <* P.end_of_line
-  and div_test = P.string "  Test: " *> div_test_p <* P.end_of_line
-  and if_true = P.string "    If true: " *> throw_p <* P.end_of_line
-  and if_false = P.string "    If false: " *> throw_p <* P.end_of_line in
+  let+ id = P.string "Monkey " *> P.integer <* P.string ":" <* P.end_of_line
+  and+ items = P.string "  Starting items: " *> items_p <* P.end_of_line
+  and+ op = P.string "  Operation: " *> op_p <* P.end_of_line
+  and+ div_test = P.string "  Test: " *> div_test_p <* P.end_of_line
+  and+ if_true = P.string "    If true: " *> throw_p <* P.end_of_line
+  and+ if_false = P.string "    If false: " *> throw_p <* P.end_of_line in
   { id; items = List.map items ~f:Z.of_int; op; div_test; if_true; if_false }
 ;;
 

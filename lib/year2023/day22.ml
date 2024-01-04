@@ -15,20 +15,20 @@ end
 module BrickSet = Set.Make (Brick)
 
 let coord_p =
-  let%map x = P.integer <* P.char ','
-  and y = P.integer <* P.char ','
-  and z = P.integer in
+  let+ x = P.integer <* P.char ','
+  and+ y = P.integer <* P.char ','
+  and+ z = P.integer in
   { x; y; z }
 ;;
 
 let brick_p =
-  let%map a = coord_p <* P.char '~'
-  and b = coord_p in
+  let+ a = coord_p <* P.char '~'
+  and+ b = coord_p in
   a, b
 ;;
 
 let bricks_p =
-  let%map bricks = P.sep_by1 P.end_of_line brick_p in
+  let+ bricks = P.sep_by1 P.end_of_line brick_p in
   bricks |> List.mapi ~f:(fun i (a, b) -> i, a, b) |> BrickSet.of_list
 ;;
 

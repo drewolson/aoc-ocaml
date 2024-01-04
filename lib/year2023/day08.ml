@@ -24,22 +24,22 @@ let token_p =
 ;;
 
 let pair_p =
-  let%map left = P.char '(' *> token_p <* P.string ", "
-  and right = token_p <* P.char ')' in
+  let+ left = P.char '(' *> token_p <* P.string ", "
+  and+ right = token_p <* P.char ')' in
   left, right
 ;;
 
 let entry_p =
-  let%map key = token_p <* P.string " = "
-  and value = pair_p in
+  let+ key = token_p <* P.string " = "
+  and+ value = pair_p in
   key, value
 ;;
 
 let map_p = P.sep_by1 P.end_of_line entry_p >>| StrMap.of_alist_exn
 
 let input_p =
-  let%map dirs = dirs_p <* P.end_of_line
-  and map = map_p in
+  let+ dirs = dirs_p <* P.end_of_line
+  and+ map = map_p in
   { dirs; map }
 ;;
 

@@ -24,9 +24,9 @@ let hex_p =
 ;;
 
 let command_p =
-  let%map dir = dir_p <* P.char ' '
-  and length = P.integer <* P.char ' '
-  and color = P.string "(#" *> hex_p <* P.char ')' in
+  let+ dir = dir_p <* P.char ' '
+  and+ length = P.integer <* P.char ' '
+  and+ color = P.string "(#" *> hex_p <* P.char ')' in
   { dir; length; color }
 ;;
 

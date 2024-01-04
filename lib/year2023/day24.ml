@@ -17,12 +17,12 @@ type line =
   }
 
 let stone_p =
-  let%map x = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
-  and y = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
-  and z = P.signed_integer <* P.spaces <* P.char '@' <* P.spaces >>| Q.of_int
-  and dx = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
-  and dy = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
-  and dz = P.signed_integer >>| Q.of_int in
+  let+ x = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
+  and+ y = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
+  and+ z = P.signed_integer <* P.spaces <* P.char '@' <* P.spaces >>| Q.of_int
+  and+ dx = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
+  and+ dy = P.signed_integer <* P.char ',' <* P.spaces >>| Q.of_int
+  and+ dz = P.signed_integer >>| Q.of_int in
   { x; y; z; dx; dy; dz }
 ;;
 

@@ -29,8 +29,8 @@ let token_p =
 let inst_p = P.choice [ Drop <$ P.char '-'; (P.char '=' *> P.integer >>| fun i -> Add i) ]
 
 let op_p =
-  let%map label = token_p
-  and inst = inst_p in
+  let+ label = token_p
+  and+ inst = inst_p in
   { label; hash = hash label; inst }
 ;;
 

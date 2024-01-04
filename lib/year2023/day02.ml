@@ -24,8 +24,8 @@ let color_p =
 ;;
 
 let draw_p =
-  let%map count = P.integer <* P.char ' '
-  and color = color_p in
+  let+ count = P.integer <* P.char ' '
+  and+ color = color_p in
   { count; color }
 ;;
 
@@ -33,8 +33,8 @@ let draws_p = P.sep_by1 (P.string ", ") draw_p
 let round_p = P.sep_by1 (P.string "; ") draws_p
 
 let game_p =
-  let%map id = P.string "Game " *> P.integer <* P.string ": "
-  and round = round_p in
+  let+ id = P.string "Game " *> P.integer <* P.string ": "
+  and+ round = round_p in
   { id; round }
 ;;
 

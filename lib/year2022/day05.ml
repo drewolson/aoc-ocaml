@@ -23,9 +23,9 @@ let crate_line_p = P.sep_by1 (P.char ' ') crate_p
 let crate_lines_p = P.sep_by1 P.end_of_line crate_line_p <* P.end_of_line
 
 let move_p =
-  let%map n = P.string "move " *> P.integer
-  and from = P.string " from " *> P.integer
-  and to' = P.string " to " *> P.integer in
+  let+ n = P.string "move " *> P.integer
+  and+ from = P.string " from " *> P.integer
+  and+ to' = P.string " to " *> P.integer in
   { n; from; to' }
 ;;
 
@@ -48,8 +48,8 @@ let to_stacks crates =
 ;;
 
 let instructions_p =
-  let%map crate_lines = crate_lines_p <* drop_line_p <* drop_line_p
-  and moves = moves_p in
+  let+ crate_lines = crate_lines_p <* drop_line_p <* drop_line_p
+  and+ moves = moves_p in
   let crates = to_stacks crate_lines in
   { moves; crates }
 ;;

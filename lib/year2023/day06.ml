@@ -7,8 +7,8 @@ type race =
   }
 
 let data_p p =
-  let%map times = P.string "Time:" *> P.spaces *> P.sep_by1 P.spaces p <* P.end_of_line
-  and distances = P.string "Distance:" *> P.spaces *> P.sep_by1 P.spaces p in
+  let+ times = P.string "Time:" *> P.spaces *> P.sep_by1 P.spaces p <* P.end_of_line
+  and+ distances = P.string "Distance:" *> P.spaces *> P.sep_by1 P.spaces p in
   times, distances
 ;;
 
@@ -22,7 +22,7 @@ let races_p =
 ;;
 
 let race_p =
-  let%map times, distances = data_p P.digits in
+  let+ times, distances = data_p P.digits in
   { time = times |> String.concat |> Int.of_string
   ; distance = distances |> String.concat |> Int.of_string
   }

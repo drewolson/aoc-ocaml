@@ -21,9 +21,9 @@ type almanac =
 let seeds_p = P.string "seeds: " *> P.sep_by1 (P.char ' ') P.integer
 
 let mapping_p =
-  let%map dest = P.integer <* P.char ' '
-  and source = P.integer <* P.char ' '
-  and length = P.integer in
+  let+ dest = P.integer <* P.char ' '
+  and+ source = P.integer <* P.char ' '
+  and+ length = P.integer in
   { source; dest; length }
 ;;
 
@@ -34,16 +34,16 @@ let name_p =
 ;;
 
 let map_p =
-  let%map name = name_p <* P.string " map:" <* P.end_of_line
-  and mappings = P.sep_by1 P.end_of_line mapping_p in
+  let+ name = name_p <* P.string " map:" <* P.end_of_line
+  and+ mappings = P.sep_by1 P.end_of_line mapping_p in
   { name; mappings }
 ;;
 
 let maps_p = P.sep_by1 (P.count 2 P.end_of_line) map_p
 
 let almanac_p =
-  let%map seeds = seeds_p <* P.count 2 P.end_of_line
-  and maps = maps_p in
+  let+ seeds = seeds_p <* P.count 2 P.end_of_line
+  and+ maps = maps_p in
   { seeds; maps }
 ;;
 

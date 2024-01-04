@@ -46,9 +46,9 @@ let reflection_score' g =
     result
   in
   let coords =
-    let open Sequence.Let_syntax in
-    let%bind x = Sequence.range 0 (Array.length g) in
-    let%map y = Sequence.range 0 (Array.length g.(x)) in
+    let open Util.Sequence.Syntax in
+    let* x = Sequence.range 0 (Array.length g) in
+    let+ y = Sequence.range 0 (Array.length g.(x)) in
     x, y
   in
   coords

@@ -17,8 +17,8 @@ let dir_p =
 ;;
 
 let step_p =
-  let%map dir = dir_p <* P.char ' '
-  and num = P.integer in
+  let+ dir = dir_p <* P.char ' '
+  and+ num = P.integer in
   dir, num
 ;;
 

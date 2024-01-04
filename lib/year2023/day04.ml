@@ -12,9 +12,9 @@ type card =
 let nums_p = P.sep_by1 P.spaces P.integer
 
 let card_p =
-  let%map id = P.string "Card" *> P.spaces *> P.integer <* P.char ':' <* P.spaces
-  and winners = nums_p <* P.spaces <* P.char '|' <* P.spaces
-  and picks = nums_p in
+  let+ id = P.string "Card" *> P.spaces *> P.integer <* P.char ':' <* P.spaces
+  and+ winners = nums_p <* P.spaces <* P.char '|' <* P.spaces
+  and+ picks = nums_p in
   { id; winners = IntSet.of_list winners; picks = IntSet.of_list picks }
 ;;
 

@@ -18,20 +18,20 @@ let name_p =
 ;;
 
 let cd_p =
-  let%map dir = P.string "$ cd " *> name_p in
+  let+ dir = P.string "$ cd " *> name_p in
   Cd dir
 ;;
 
 let ls_p = Ls <$ P.string "$ ls"
 
 let dir_item_p =
-  let%map dir = P.string "dir " *> name_p in
+  let+ dir = P.string "dir " *> name_p in
   DirItem dir
 ;;
 
 let file_item_p =
-  let%map size = P.integer <* P.char ' '
-  and file = name_p in
+  let+ size = P.integer <* P.char ' '
+  and+ file = name_p in
   FileItem (size, file)
 ;;
 

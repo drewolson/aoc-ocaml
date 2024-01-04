@@ -16,10 +16,11 @@ let grid_size grid =
 ;;
 
 let coords grid =
+  let open Util.List.Syntax in
   let max_x, max_y = grid_size grid in
-  let%bind.List x = List.range 0 max_x
-  and y = List.range 0 max_y in
-  List.return (x, y)
+  let* x = List.range 0 max_x in
+  let+ y = List.range 0 max_y in
+  x, y
 ;;
 
 let rays x y grid =

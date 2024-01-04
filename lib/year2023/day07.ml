@@ -58,8 +58,8 @@ let card_p =
 ;;
 
 let hand_p =
-  let%map cards = P.many1 card_p <* P.spaces
-  and score = P.integer in
+  let+ cards = P.many1 card_p <* P.spaces
+  and+ score = P.integer in
   cards, score
 ;;
 

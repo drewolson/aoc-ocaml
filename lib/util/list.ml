@@ -1,3 +1,11 @@
+module Syntax = struct
+  let ( let* ) t f = Core.List.bind t ~f
+  let ( and* ) = Core.List.Let_syntax.Let_syntax.both
+  let ( let+ ) t f = Core.List.map t ~f
+  let ( and+ ) = Core.List.Let_syntax.Let_syntax.both
+  let return = Core.List.return
+end
+
 let max_int l = Core.List.max_elt ~compare l |> Option.value_exn
 let min_int l = Core.List.min_elt ~compare l |> Option.value_exn
 let replicate a ~n = Core.List.init n ~f:(const a)

@@ -7,6 +7,7 @@ module Syntax = struct
     ( >>= ), ( >>| ), ( *> ), ( <* ), ( <|> ), ( <?> ), ( <$> )
   ;;
 
+  let ( let* ), ( let+ ), ( and+ ) = ( let* ), ( let+ ), ( and+ )
   let ( $> ) p a = p >>| const a
   let ( <$ ) a p = p >>| const a
 end

@@ -35,8 +35,7 @@ let solve max drop grid =
   let expand_steps dir init_loss coords =
     coords
     |> List.filter_map ~f:(fun coord ->
-      let%map.Option loss = Map.find grid coord in
-      loss, coord)
+      coord |> Map.find grid |> Option.map ~f:(fun loss -> loss, coord))
     |> List.folding_map ~init:init_loss ~f:(fun sum (loss, coord) ->
       let loss' = sum + loss in
       loss', (loss', coord, dir))

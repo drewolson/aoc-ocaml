@@ -50,26 +50,26 @@ let name_p =
 let outputs_p = P.sep_by1 (P.string ", ") name_p
 
 let broadcaster_p =
-  let%map outputs = P.string "broadcaster -> " *> outputs_p in
+  let+ outputs = P.string "broadcaster -> " *> outputs_p in
   Broadcaster { name = "broadcaster"; outputs }
 ;;
 
 let flip_flop_p =
-  let%map name = P.char '%' *> name_p <* P.string " -> "
-  and outputs = outputs_p in
+  let+ name = P.char '%' *> name_p <* P.string " -> "
+  and+ outputs = outputs_p in
   FlipFlop { name; state = Off; outputs }
 ;;
 
 let conjunction_p =
-  let%map name = P.char '&' *> name_p <* P.string " -> "
-  and outputs = outputs_p in
+  let+ name = P.char '&' *> name_p <* P.string " -> "
+  and+ outputs = outputs_p in
   Conjunction { name; last_inputs = StrMap.empty; outputs }
 ;;
 
 let module_p = P.choice [ flip_flop_p; conjunction_p; broadcaster_p ]
 
 let modules_p =
-  let%map modules = P.sep_by1 P.end_of_line module_p in
+  let+ modules = P.sep_by1 P.end_of_line module_p in
   modules |> List.map ~f:(fun m -> mod_name m, m) |> StrMap.of_alist_exn
 ;;
 

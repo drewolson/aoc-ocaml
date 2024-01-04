@@ -65,16 +65,16 @@ let state_p = P.choice [ Accept <$ P.char 'A'; Reject <$ P.char 'R' ]
 let dest_p = P.choice [ (state_p >>| fun s -> End s); (name_p >>| fun n -> Name n) ]
 
 let lt_p =
-  let%map attr = attr_p <* P.char '<'
-  and n = P.integer <* P.char ':'
-  and dest = dest_p in
+  let+ attr = attr_p <* P.char '<'
+  and+ n = P.integer <* P.char ':'
+  and+ dest = dest_p in
   LT { attr; n; dest }
 ;;
 
 let gt_p =
-  let%map attr = attr_p <* P.char '>'
-  and n = P.integer <* P.char ':'
-  and dest = dest_p in
+  let+ attr = attr_p <* P.char '>'
+  and+ n = P.integer <* P.char ':'
+  and+ dest = dest_p in
   GT { attr; n; dest }
 ;;
 
@@ -82,29 +82,29 @@ let move_p = dest_p >>| fun d -> Move d
 let rule_p = P.choice [ lt_p; gt_p; move_p ]
 
 let workflow_p =
-  let%map name = name_p <* P.char '{'
-  and rules = P.sep_by1 (P.char ',') rule_p <* P.char '}' in
+  let+ name = name_p <* P.char '{'
+  and+ rules = P.sep_by1 (P.char ',') rule_p <* P.char '}' in
   { name; rules }
 ;;
 
 let workflows_p =
-  let%map workflows = P.sep_by1 P.end_of_line workflow_p in
+  let+ workflows = P.sep_by1 P.end_of_line workflow_p in
   workflows |> List.map ~f:(fun w -> w.name, w) |> StrMap.of_alist_exn
 ;;
 
 let part_p =
-  let%map x = P.string "{x=" *> P.integer <* P.char ','
-  and m = P.string "m=" *> P.integer <* P.char ','
-  and a = P.string "a=" *> P.integer <* P.char ','
-  and s = P.string "s=" *> P.integer <* P.char '}' in
+  let+ x = P.string "{x=" *> P.integer <* P.char ','
+  and+ m = P.string "m=" *> P.integer <* P.char ','
+  and+ a = P.string "a=" *> P.integer <* P.char ','
+  and+ s = P.string "s=" *> P.integer <* P.char '}' in
   { x; m; a; s }
 ;;
 
 let parts_p = P.sep_by1 P.end_of_line part_p
 
 let input_p =
-  let%map workflows = workflows_p <* P.string "\n\n"
-  and parts = parts_p in
+  let+ workflows = workflows_p <* P.string "\n\n"
+  and+ parts = parts_p in
   { workflows; parts }
 ;;
 

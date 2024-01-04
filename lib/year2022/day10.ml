@@ -6,7 +6,7 @@ type inst =
   | Noop
 
 let addx_p =
-  let%map i = P.string "addx " *> P.signed_integer in
+  let+ i = P.string "addx " *> P.signed_integer in
   [ Noop; AddX i ]
 ;;
 

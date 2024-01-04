@@ -11,8 +11,8 @@ let is_token = function
 ;;
 
 let line_p =
-  let%map tokens = P.take_while is_token <* P.char ' '
-  and counts = P.sep_by1 (P.char ',') P.integer in
+  let+ tokens = P.take_while is_token <* P.char ' '
+  and+ counts = P.sep_by1 (P.char ',') P.integer in
   String.to_list tokens, counts
 ;;
 
