@@ -20,27 +20,29 @@ let execute (i, acc) = function
 
 let to_line vals =
   vals
-  |> List.zip_exn (List.range 0 40)
+  |> List.combine List.(0 --^ 40)
   |> List.map ~f:(fun (v, i) -> if abs (i - v) <= 1 then "#" else ".")
-  |> String.concat
+  |> String.concat ~sep:""
 ;;
 
 let part1 input =
   input
   |> P.parse_exn insts_p
-  |> List.folding_map ~init:(1, 1) ~f:execute
-  |> Util.List.drop ~n:19
-  |> List.chunks_of ~length:40
-  |> List.map ~f:List.hd_exn
-  |> List.sum (module Int) ~f:(fun (i, n) -> i * n)
+  |> List.fold_map ~init:(1, 1) ~f:execute
+  |> snd
+  |> List.drop 19
+  |> List.chunks 40
+  |> List.map ~f:List.hd
+  |> List.fold_left ~init:0 ~f:(fun acc (i, n) -> acc + (i * n))
 ;;
 
 let part2 input =
   input
   |> P.parse_exn insts_p
-  |> List.folding_map ~init:(0, 1) ~f:execute
+  |> List.fold_map ~init:(0, 1) ~f:execute
+  |> snd
   |> List.map ~f:snd
-  |> List.chunks_of ~length:40
+  |> List.chunks 40
   |> List.map ~f:to_line
   |> String.concat ~sep:"\n"
 ;;

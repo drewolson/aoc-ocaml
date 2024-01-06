@@ -1,13 +1,17 @@
 (library
   (name year2022)
   (libraries
-    angstrom
     core
     ppx_jane
+
+    containers
+    ppx_deriving
+
+    angstrom
     pcre
     util
     zarith)
   (preprocess
-    (pps ppx_jane))
+    (pps ppx_deriving.eq ppx_deriving.ord))
   (flags
-    -open Core))
+    -open ContainersLabels))

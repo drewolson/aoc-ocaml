@@ -23,11 +23,15 @@
     ocamlformat
     utop
 
-    angstrom
+    containers
+    ppx_deriving
+
     core
     core_bench
     core_kernel
     core_unix
+
+    angstrom
     domainslib
     pcre
     ppx_jane

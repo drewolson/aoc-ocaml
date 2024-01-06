@@ -51,14 +51,14 @@ let build_fs cmds =
     let nodes, cmds' = build_nodes [] cmds in
     Dir (name, nodes), cmds'
   in
-  build_dir "/" (List.drop cmds 2) |> fst
+  build_dir "/" (List.drop 2 cmds) |> fst
 ;;
 
 let sizes fs =
   let rec sizes' = function
     | Dir (_, fs) ->
       let n, ns =
-        List.fold fs ~init:(0, []) ~f:(fun (n, ns) f ->
+        List.fold_left fs ~init:(0, []) ~f:(fun (n, ns) f ->
           let n', ns' = sizes' f in
           n + n', ns @ ns')
       in
@@ -79,6 +79,6 @@ let part1 input =
 
 let part2 input =
   let ns = input |> P.parse_exn cmds_p |> build_fs |> sizes in
-  let goal = 30000000 - (70000000 - List.hd_exn ns) in
-  ns |> List.tl_exn |> List.sort ~compare |> List.find_exn ~f:(fun n -> n >= goal)
+  let goal = 30000000 - (70000000 - List.hd ns) in
+  ns |> List.tl |> List.sort ~cmp:compare |> List.find ~f:(fun n -> n >= goal)
 ;;

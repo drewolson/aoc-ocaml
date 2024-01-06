@@ -2,7 +2,7 @@ module P = Util.Parser
 open P.Syntax
 
 module Coord = struct
-  type t = int * int [@@deriving sexp, compare]
+  type t = int * int [@@deriving ord, eq]
 end
 
 module CoordSet = Set.Make (Coord)
@@ -41,19 +41,21 @@ let take_steps n steps =
   let take_step (set, h, ts) d =
     let h' = move h d in
     let ts' =
-      List.folding_map ts ~init:h' ~f:(fun acc a ->
+      ts
+      |> List.fold_map ~init:h' ~f:(fun acc a ->
         let a' = move_tail acc a in
         a', a')
+      |> snd
     in
-    let set' = Set.add set (List.last_exn ts') in
+    let set' = CoordSet.add (ts' |> List.rev |> List.hd) set in
     set', h', ts'
   in
   steps
-  |> List.fold
+  |> List.fold_left
        ~init:(CoordSet.singleton (0, 0), (0, 0), Util.List.replicate ~n (0, 0))
        ~f:take_step
   |> fun (x, _, _) -> x
 ;;
 
-let part1 input = input |> parse_coords |> take_steps 1 |> Set.length
-let part2 input = input |> parse_coords |> take_steps 9 |> Set.length
+let part1 input = input |> parse_coords |> take_steps 1 |> CoordSet.cardinal
+let part2 input = input |> parse_coords |> take_steps 9 |> CoordSet.cardinal

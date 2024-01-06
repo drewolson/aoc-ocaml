@@ -37,51 +37,54 @@ let monkey_p =
 let monkeys_p = P.sep_by1 P.end_of_line monkey_p
 
 let parse_input input =
-  input |> P.parse_exn monkeys_p |> List.map ~f:(fun m -> m.id, m) |> IntMap.of_alist_exn
+  input |> P.parse_exn monkeys_p |> List.map ~f:(fun m -> m.id, m) |> IntMap.of_list
 ;;
 
 let empty_counts monkeys =
-  monkeys
-  |> Map.length
-  |> List.range 0
-  |> List.fold ~init:IntMap.empty ~f:(fun m i -> Map.add_exn m ~key:i ~data:Z.zero)
+  List.(0 --^ IntMap.cardinal monkeys)
+  |> List.fold_left ~init:IntMap.empty ~f:(fun m i -> IntMap.add i Z.zero m)
 ;;
 
 let rec play_rounds n reduce counts monkeys =
   let update_monkey (cs, ms) i =
-    let m = Map.find_exn ms i in
+    let m = IntMap.find i ms in
     let cs' =
-      Map.update cs i ~f:(fun v ->
-        Z.(Option.value ~default:~$0 v + ~$(List.length m.items)))
+      IntMap.update
+        i
+        (fun v -> Some Z.(Option.value v ~default:~$0 + ~$(List.length m.items)))
+        cs
     in
-    let items' = List.map ~f:(Fn.compose reduce m.op) m.items in
+    let items' = List.map ~f:(Fun.compose m.op reduce) m.items in
     let true_items, false_items =
-      List.partition_tf items' ~f:(fun n -> Z.(equal (n mod m.div_test) ~$0))
+      List.partition items' ~f:(fun n -> Z.(equal (n mod m.div_test) ~$0))
     in
     let ms' =
       ms
-      |> Map.set ~key:i ~data:{ m with items = [] }
-      |> Util.Map.alter ~key:m.if_true ~f:(fun mt ->
-        { mt with items = mt.items @ true_items })
-      |> Util.Map.alter ~key:m.if_false ~f:(fun mf ->
-        { mf with items = mf.items @ false_items })
+      |> IntMap.add i { m with items = [] }
+      |> IntMap.update m.if_true (function
+        | None -> None
+        | Some mt -> Some { mt with items = mt.items @ true_items })
+      |> IntMap.update m.if_false (function
+        | None -> None
+        | Some mf -> Some { mf with items = mf.items @ false_items })
     in
     cs', ms'
   in
   if n = 0
   then counts
   else
-    List.range 0 (Map.length monkeys)
-    |> List.fold ~init:(counts, monkeys) ~f:update_monkey
+    List.(0 --^ IntMap.cardinal monkeys)
+    |> List.fold_left ~init:(counts, monkeys) ~f:update_monkey
     |> fun (c, m) -> play_rounds (n - 1) reduce c m
 ;;
 
 let solve monkeys reduce rounds =
   play_rounds rounds reduce IntMap.empty monkeys
-  |> Map.data
-  |> List.sort ~compare:(fun a b -> -Z.compare a b)
-  |> Util.List.take ~n:2
-  |> List.fold ~init:Z.one ~f:Z.( * )
+  |> IntMap.values
+  |> List.of_iter
+  |> List.sort ~cmp:(fun a b -> -Z.compare a b)
+  |> List.take 2
+  |> List.fold_left ~init:Z.one ~f:Z.( * )
   |> Z.to_string
 ;;
 
@@ -95,9 +98,10 @@ let part2 input =
   let monkeys = parse_input input in
   let prod =
     monkeys
-    |> Map.data
+    |> IntMap.values
+    |> List.of_iter
     |> List.map ~f:(fun m -> m.div_test)
-    |> List.fold ~init:Z.one ~f:Z.( * )
+    |> List.fold_left ~init:Z.one ~f:Z.( * )
   in
   let reduce n = Z.(n mod prod) in
   solve monkeys reduce 10000
