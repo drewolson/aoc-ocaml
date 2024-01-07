@@ -1,6 +1,7 @@
 (library
   (name util)
   (libraries
+    containers
     angstrom
     core
     pcre

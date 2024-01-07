@@ -1,7 +1,7 @@
 let parse input =
   input
-  |> String.split_lines
-  |> List.map ~f:(fun l -> l |> String.split ~on:' ' |> List.map ~f:Int.of_string)
+  |> String.lines
+  |> List.map ~f:(fun l -> l |> String.split ~by:" " |> List.map ~f:Int.of_string_exn)
 ;;
 
 let rec next_val pat =
@@ -13,7 +13,8 @@ let rec next_val pat =
   then 0
   else (
     let next = pat |> pairs |> List.map ~f:(fun (a, b) -> b - a) |> next_val in
-    List.last_exn pat + next)
+    let last = pat |> List.rev |> List.hd in
+    last + next)
 ;;
 
 let part1 input = input |> parse |> List.map ~f:next_val |> Util.List.sum_int

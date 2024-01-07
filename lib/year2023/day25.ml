@@ -2,11 +2,11 @@ module P = Util.Parser
 open P.Syntax
 
 module Node = struct
-  type t = string [@@deriving sexp, equal, compare]
+  type t = string [@@deriving eq, ord]
 end
 
 module Edge = struct
-  type t = Node.t * Node.t [@@deriving sexp, equal, compare]
+  type t = Node.t * Node.t [@@deriving eq, ord]
 end
 
 module NodeSet = Set.Make (Node)
@@ -31,22 +31,22 @@ let make_graph lines =
   let aux (ns, es) (n, conns) =
     let nodes = n :: conns in
     let edges = List.map conns ~f:(make_edge n) in
-    let ns' = List.fold nodes ~init:ns ~f:Set.add in
-    let es' = List.fold edges ~init:es ~f:Set.add in
+    let ns' = List.fold_left nodes ~init:ns ~f:(Fun.flip NodeSet.add) in
+    let es' = List.fold_left edges ~init:es ~f:(Fun.flip EdgeSet.add) in
     ns', es'
   in
-  let nodes, edges = List.fold lines ~init:(NodeSet.empty, EdgeSet.empty) ~f:aux in
-  nodes, Set.to_list edges
+  let nodes, edges = List.fold_left lines ~init:(NodeSet.empty, EdgeSet.empty) ~f:aux in
+  nodes, EdgeSet.to_list edges
 ;;
 
 let solve graph =
   let rec aux = function
-    | nodes, edges when Set.length nodes = 2 && List.length edges = 3 ->
-      Some (Set.fold nodes ~init:1 ~f:(fun acc node -> acc * (String.length node / 3)))
-    | nodes, _ when Set.length nodes = 2 -> None
+    | nodes, edges when NodeSet.cardinal nodes = 2 && List.length edges = 3 ->
+      Some (NodeSet.fold (fun node acc -> acc * (String.length node / 3)) nodes 1)
+    | nodes, _ when NodeSet.cardinal nodes = 2 -> None
     | nodes, edges ->
-      let n = edges |> List.length |> Random.int in
-      let a, b = List.nth_exn edges n in
+      let n = edges |> List.length |> Random.int |> Random.run in
+      let a, b = List.nth edges n in
       let ab = a ^ b in
       let edges' =
         List.filter_map edges ~f:(function
@@ -55,10 +55,10 @@ let solve graph =
           | x, y when Node.equal y a || Node.equal y b -> Some (make_edge x ab)
           | e -> Some e)
       in
-      let nodes' = Set.add (Set.remove (Set.remove nodes a) b) ab in
+      let nodes' = nodes |> NodeSet.remove a |> NodeSet.remove b |> NodeSet.add ab in
       aux (nodes', edges')
   in
-  Util.Sequence.nats |> Sequence.find_map ~f:(fun _ -> aux graph) |> Option.value_exn
+  Seq.ints 0 |> Seq.find_map (fun _ -> aux graph) |> Option.get_exn_or "none"
 ;;
 
 let part1 input = input |> P.parse_exn lines_p |> make_graph |> solve

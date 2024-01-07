@@ -12,12 +12,12 @@ type op =
   ; inst : inst
   }
 
-let parse input = input |> String.strip |> Pcre.split ~pat:","
+let parse input = input |> String.trim |> Pcre.split ~pat:","
 
 let hash token =
   token
   |> String.to_list
-  |> List.fold ~init:0 ~f:(fun acc c -> Int.rem ((Char.to_int c + acc) * 17) 256)
+  |> List.fold_left ~init:0 ~f:(fun acc c -> Int.rem ((Char.to_int c + acc) * 17) 256)
 ;;
 
 let token_p =
@@ -38,33 +38,37 @@ let ops_p = P.sep_by1 (P.char ',') op_p
 
 let execute map op =
   let replace items (k, v) =
-    if List.Assoc.mem items ~equal:String.equal k
+    if List.Assoc.mem ~eq:String.equal k items
     then List.map items ~f:(fun (k', v') -> if String.equal k k' then k, v else k', v')
     else items @ [ k, v ]
   in
   match op.inst with
   | Add i ->
-    Map.update map op.hash ~f:(function
-      | None -> [ op.label, i ]
-      | Some items -> replace items (op.label, i))
+    IntMap.update
+      op.hash
+      (function
+        | None -> Some [ op.label, i ]
+        | Some items -> Some (replace items (op.label, i)))
+      map
   | Drop ->
-    Map.update map op.hash ~f:(function
-      | None -> []
-      | Some items -> List.Assoc.remove items ~equal:String.equal op.label)
+    IntMap.update
+      op.hash
+      (function
+        | None -> Some []
+        | Some items -> Some (List.Assoc.remove ~eq:String.equal op.label items))
+      map
 ;;
 
-let focus_power ~key ~data sum =
+let focus_power key data sum =
   let power =
     data |> List.mapi ~f:(fun i (_, v) -> (key + 1) * (i + 1) * v) |> Util.List.sum_int
   in
   sum + power
 ;;
 
-let part1 input = input |> parse |> List.sum (module Int) ~f:hash
+let part1 input = input |> parse |> List.fold_left ~init:0 ~f:(fun acc t -> acc + hash t)
 
 let part2 input =
-  input
-  |> P.parse_exn ops_p
-  |> List.fold ~init:IntMap.empty ~f:execute
-  |> Map.fold ~init:0 ~f:focus_power
+  let map = input |> P.parse_exn ops_p |> List.fold_left ~init:IntMap.empty ~f:execute in
+  IntMap.fold focus_power map 0
 ;;

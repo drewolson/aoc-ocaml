@@ -5,7 +5,7 @@ type color =
   | Red
   | Green
   | Blue
-[@@deriving equal]
+[@@deriving eq]
 
 type draw =
   { count : int
@@ -42,10 +42,8 @@ let games_p = P.sep_by1 P.end_of_line game_p
 
 let count color g =
   let draw_count draws =
-    List.sum
-      (module Int)
-      draws
-      ~f:(fun draw -> if equal_color draw.color color then draw.count else 0)
+    List.fold_left draws ~init:0 ~f:(fun acc draw ->
+      acc + if equal_color draw.color color then draw.count else 0)
   in
   g.round |> List.map ~f:draw_count |> Util.List.max_int
 ;;
@@ -57,7 +55,9 @@ let part1 input =
   input
   |> P.parse_exn games_p
   |> List.filter ~f:is_possible
-  |> List.sum (module Int) ~f:(fun g -> g.id)
+  |> List.fold_left ~init:0 ~f:(fun acc g -> acc + g.id)
 ;;
 
-let part2 input = input |> P.parse_exn games_p |> List.sum (module Int) ~f:power
+let part2 input =
+  input |> P.parse_exn games_p |> List.fold_left ~init:0 ~f:(fun acc g -> acc + power g)
+;;

@@ -9,12 +9,12 @@ type dir =
 type node = string * string
 
 type input =
-  { dirs : dir Sequence.t
+  { dirs : dir Seq.t
   ; map : node StrMap.t
   }
 
 let dir_p = P.choice [ R <$ P.char 'R'; L <$ P.char 'L' ]
-let dirs_p = P.many_till dir_p P.end_of_line >>| Sequence.cycle_list_exn
+let dirs_p = P.many_till dir_p P.end_of_line >>| Seq.of_list >>| Seq.cycle
 
 let token_p =
   P.take_while (function
@@ -35,7 +35,7 @@ let entry_p =
   key, value
 ;;
 
-let map_p = P.sep_by1 P.end_of_line entry_p >>| StrMap.of_alist_exn
+let map_p = P.sep_by1 P.end_of_line entry_p >>| StrMap.of_list
 
 let input_p =
   let+ dirs = dirs_p <* P.end_of_line
@@ -48,24 +48,24 @@ let solve { dirs; map } =
     if String.equal node "ZZZ"
     then Error count
     else (
-      let l, r = Map.find_exn map node in
+      let l, r = StrMap.find node map in
       match dir with
       | L -> Ok (count + 1, l)
       | R -> Ok (count + 1, r))
   in
-  dirs |> Util.Sequence.fold_result_exn ~init:(0, "AAA") ~f:make_move
+  dirs |> Util.Seq.fold_result ~init:(0, "AAA") ~f:make_move
 ;;
 
 let solve' { dirs; map } =
   let is_start s = Pcre.pmatch ~rex:(Pcre.regexp {|A\z|}) s in
   let is_end s = Pcre.pmatch ~rex:(Pcre.regexp {|Z\z|}) s in
-  let starts = map |> Map.keys |> List.filter ~f:is_start in
+  let starts = map |> StrMap.keys |> List.of_iter |> List.filter ~f:is_start in
   let make_move (count, steps, nodes) dir =
-    let ends, rest = List.partition_tf nodes ~f:is_end in
+    let ends, rest = List.partition nodes ~f:is_end in
     let steps' = if List.is_empty ends then steps else count :: steps in
     let nodes' =
       List.map rest ~f:(fun node ->
-        let l, r = Map.find_exn map node in
+        let l, r = StrMap.find node map in
         match dir with
         | L -> l
         | R -> r)
@@ -73,8 +73,8 @@ let solve' { dirs; map } =
     if List.is_empty nodes' then Error steps' else Ok (Z.add count Z.one, steps', nodes')
   in
   dirs
-  |> Util.Sequence.fold_result_exn ~init:(Z.zero, [], starts) ~f:make_move
-  |> List.fold ~init:Z.one ~f:Z.lcm
+  |> Util.Seq.fold_result ~init:(Z.zero, [], starts) ~f:make_move
+  |> List.fold_left ~init:Z.one ~f:Z.lcm
   |> Z.to_int
 ;;
 

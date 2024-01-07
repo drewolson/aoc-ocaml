@@ -1,5 +1,5 @@
 module Coord = struct
-  type t = int * int [@@deriving sexp, compare, equal]
+  type t = int * int [@@deriving eq, ord]
 end
 
 module CoordMap = Map.Make (Coord)
@@ -9,10 +9,10 @@ type dir =
   | E
   | S
   | W
-[@@deriving sexp, compare]
+[@@deriving eq, ord]
 
 module Beam = struct
-  type t = dir * Coord.t [@@deriving sexp, compare]
+  type t = dir * Coord.t [@@deriving eq, ord]
 end
 
 module BeamSet = Set.Make (Beam)
@@ -20,10 +20,10 @@ module CoordSet = Set.Make (Coord)
 
 let parse input =
   input
-  |> String.split_lines
-  |> List.concat_mapi ~f:(fun y l ->
-    l |> String.to_list |> List.mapi ~f:(fun x c -> (x, y), c))
-  |> CoordMap.of_alist_exn
+  |> String.lines
+  |> List.mapi ~f:(fun y l -> l |> String.to_list |> List.mapi ~f:(fun x c -> (x, y), c))
+  |> List.concat
+  |> CoordMap.of_list
 ;;
 
 let solve entry grid =
@@ -36,7 +36,7 @@ let solve entry grid =
   in
   let move_beam (dir, coord) =
     let coord' = move dir coord in
-    match Map.find grid coord', dir with
+    match CoordMap.find_opt coord' grid, dir with
     | Some '/', N | Some '\\', S -> [ E, coord' ]
     | Some '/', S | Some '\\', N -> [ W, coord' ]
     | Some '/', E | Some '\\', W -> [ N, coord' ]
@@ -49,27 +49,32 @@ let solve entry grid =
   in
   let rec step visited = function
     | [] -> visited
-    | h :: t when Set.mem visited h -> step visited t
-    | h :: t -> step (Set.add visited h) (t @ move_beam h)
+    | h :: t when BeamSet.mem h visited -> step visited t
+    | h :: t -> step (BeamSet.add h visited) (t @ move_beam h)
   in
-  entry |> move_beam |> step BeamSet.empty |> CoordSet.map ~f:snd |> Set.length
+  entry
+  |> move_beam
+  |> step BeamSet.empty
+  |> BeamSet.to_list
+  |> List.map ~f:snd
+  |> CoordSet.of_list
+  |> CoordSet.cardinal
 ;;
 
 let part1 input = input |> parse |> solve (E, (-1, 0))
 
 let part2 input =
   let grid = parse input in
-  let coords = Map.keys grid in
-  let max_x = coords |> List.map ~f:fst |> List.max_elt ~compare |> Option.value_exn in
-  let max_y = coords |> List.map ~f:snd |> List.max_elt ~compare |> Option.value_exn in
+  let coords = grid |> CoordMap.keys |> List.of_iter in
+  let max_x = coords |> List.map ~f:fst |> List.reduce_exn ~f:max in
+  let max_y = coords |> List.map ~f:snd |> List.reduce_exn ~f:max in
   let h_starts =
-    List.range 0 max_y |> List.concat_map ~f:(fun y -> [ E, (-1, y); W, (max_x, y) ])
+    List.(0 --^ max_y) |> List.concat_map ~f:(fun y -> [ E, (-1, y); W, (max_x, y) ])
   in
   let v_starts =
-    List.range 0 max_x |> List.concat_map ~f:(fun x -> [ S, (x, -1); N, (max_y, x) ])
+    List.(0 --^ max_x) |> List.concat_map ~f:(fun x -> [ S, (x, -1); N, (max_y, x) ])
   in
   h_starts @ v_starts
   |> List.map ~f:(fun entry -> solve entry grid)
-  |> List.max_elt ~compare
-  |> Option.value_exn
+  |> List.reduce_exn ~f:max
 ;;

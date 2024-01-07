@@ -6,7 +6,6 @@ type mapping =
   ; dest : int
   ; length : int
   }
-[@@deriving fields ~getters]
 
 type map =
   { name : string
@@ -30,7 +29,7 @@ let mapping_p =
 let name_p =
   P.take_while1 (function
     | '-' -> true
-    | c -> Char.is_lowercase c)
+    | c -> Util.Char.is_lowercase c)
 ;;
 
 let map_p =
@@ -51,9 +50,9 @@ let run_map ~f ~t ~m maps seed =
   let run_mappings value mappings =
     let mapping =
       mappings
-      |> List.sort ~compare:(fun a b -> -compare (f a) (f b))
+      |> List.sort ~cmp:(fun a b -> -compare (f a) (f b))
       |> List.drop_while ~f:(fun m -> f m > value)
-      |> List.hd
+      |> List.head_opt
     in
     match mapping with
     | Some m when value <= f m + m.length -> t m + abs (value - f m)
@@ -62,26 +61,28 @@ let run_map ~f ~t ~m maps seed =
   maps
   |> m
   |> List.map ~f:(fun map -> map.mappings)
-  |> List.fold ~init:seed ~f:run_mappings
+  |> List.fold_left ~init:seed ~f:run_mappings
 ;;
 
 let solve almanac =
   almanac.seeds
-  |> List.map ~f:(run_map ~f:source ~t:dest ~m:Fn.id almanac.maps)
-  |> List.min_elt ~compare
-  |> Option.value_exn
+  |> List.map
+       ~f:(run_map ~f:(fun s -> s.source) ~t:(fun s -> s.dest) ~m:Fun.id almanac.maps)
+  |> List.reduce_exn ~f:min
 ;;
 
 let solve' almanac =
-  Util.Sequence.nats
-  |> Sequence.filter ~f:(fun loc ->
-    let result = run_map ~f:dest ~t:source ~m:List.rev almanac.maps loc in
+  Seq.ints 0
+  |> Seq.filter (fun loc ->
+    let result =
+      run_map ~f:(fun s -> s.dest) ~t:(fun s -> s.source) ~m:List.rev almanac.maps loc
+    in
     almanac.seeds
-    |> List.chunks_of ~length:2
+    |> List.chunks 2
     |> List.exists ~f:(function
       | [ a; b ] -> a <= result && result <= a + b
       | _ -> false))
-  |> Sequence.hd_exn
+  |> Seq.head_exn
 ;;
 
 let part1 input = input |> P.parse_exn almanac_p |> solve

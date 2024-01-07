@@ -1,5 +1,5 @@
 module Coord = struct
-  type t = int * int [@@deriving compare, equal, sexp]
+  type t = int * int [@@deriving eq, ord]
 end
 
 module CoordMap = Map.Make (Coord)
@@ -13,34 +13,37 @@ type dir =
 
 let make_grid input =
   input
-  |> String.split_lines
-  |> List.concat_mapi ~f:(fun y line ->
+  |> String.lines
+  |> List.mapi ~f:(fun y line ->
     line |> String.to_list |> List.mapi ~f:(fun x c -> (x, y), c))
-  |> CoordMap.of_alist_exn
+  |> List.concat
+  |> CoordMap.of_list
 ;;
 
 let find_start grid =
   grid
-  |> Map.to_alist
+  |> CoordMap.to_list
   |> List.find_map ~f:(fun (k, v) -> if Char.equal 'S' v then Some k else None)
-  |> Option.value_exn
+  |> Option.get_exn_or "not found"
 ;;
 
 let neighbors grid (x, y) =
   [ E, (x + 1, y); W, (x - 1, y); S, (x, y + 1); N, (x, y - 1) ]
-  |> List.filter_map ~f:(fun (d, c) -> Map.find grid c |> Option.map ~f:(fun v -> d, v))
+  |> List.filter_map ~f:(fun (d, c) ->
+    grid |> CoordMap.find_opt c |> Option.map (fun v -> d, v))
 ;;
 
 let initial_dir start grid =
   start
   |> neighbors grid
   |> List.find_map ~f:(function
-    | N, v when List.mem [ '|'; 'F'; '7' ] v ~equal:Char.equal -> Some (N, v)
-    | E, v when List.mem [ '-'; 'J'; '7' ] v ~equal:Char.equal -> Some (E, v)
-    | S, v when List.mem [ '|'; 'J'; 'L' ] v ~equal:Char.equal -> Some (S, v)
-    | W, v when List.mem [ '-'; 'F'; 'L' ] v ~equal:Char.equal -> Some (W, v)
+    | N, v when List.mem v [ '|'; 'F'; '7' ] ~eq:Char.equal -> Some (N, v)
+    | E, v when List.mem v [ '-'; 'J'; '7' ] ~eq:Char.equal -> Some (E, v)
+    | S, v when List.mem v [ '|'; 'J'; 'L' ] ~eq:Char.equal -> Some (S, v)
+    | W, v when List.mem v [ '-'; 'F'; 'L' ] ~eq:Char.equal -> Some (W, v)
     | _ -> None)
-  |> Option.value_exn
+  |> Option.get_exn_or "empty"
+  |> fst
 ;;
 
 let follow_path grid start dir =
@@ -51,7 +54,7 @@ let follow_path grid start dir =
     | W -> x - 1, y
   in
   let next_dir dir coord =
-    let v = Map.find_exn grid coord in
+    let v = CoordMap.find coord grid in
     match dir, v with
     | N, '|' -> N
     | N, 'F' -> E
@@ -69,7 +72,7 @@ let follow_path grid start dir =
   in
   let rec aux path coord dir =
     let coord' = move coord dir in
-    let path' = Set.add path coord' in
+    let path' = CoordSet.add coord' path in
     if Coord.equal coord' start
     then path'
     else (
@@ -83,9 +86,9 @@ let in_loop s_vertical grid path (x, y) =
   let sum =
     List.range 0 x
     |> List.map ~f:(fun x' -> x', y)
-    |> List.filter ~f:(Set.mem path)
+    |> List.filter ~f:(fun c -> CoordSet.mem c path)
     |> List.map ~f:(fun c ->
-      match Map.find_exn grid c with
+      match CoordMap.find c grid with
       | '|' | 'J' | 'L' -> 1
       | 'S' when s_vertical -> 1
       | _ -> 0)
@@ -97,19 +100,20 @@ let in_loop s_vertical grid path (x, y) =
 let part1 input =
   let grid = make_grid input in
   let start = find_start grid in
-  let dir, coord = initial_dir start grid in
-  let l = follow_path grid start dir |> Set.length in
+  let dir = initial_dir start grid in
+  let l = follow_path grid start dir |> CoordSet.cardinal in
   l / 2
 ;;
 
 let part2 s_vertical input =
   let grid = make_grid input in
   let start = find_start grid in
-  let dir, coord = initial_dir start grid in
+  let dir = initial_dir start grid in
   let path = follow_path grid start dir in
   grid
-  |> Map.filter_keys ~f:(fun c -> not (Set.mem path c))
-  |> Map.keys
+  |> CoordMap.filter (fun c _ -> not (CoordSet.mem c path))
+  |> CoordMap.keys
+  |> List.of_iter
   |> List.filter ~f:(in_loop s_vertical grid path)
   |> List.length
 ;;

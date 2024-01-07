@@ -9,7 +9,7 @@ type type' =
   | TwoPair
   | OnePair
   | HighCard
-[@@deriving compare]
+[@@deriving eq, ord]
 
 type card =
   | Ace
@@ -25,7 +25,7 @@ type card =
   | Four
   | Three
   | Two
-[@@deriving compare, enumerate, equal]
+[@@deriving eq, ord, enum]
 
 module WildCard = struct
   type t = card
@@ -33,11 +33,13 @@ module WildCard = struct
   let compare a b =
     match a, b with
     | Jack, Jack -> 0
-    | Jack, a -> 1
-    | a, Jack -> -1
+    | Jack, _ -> 1
+    | _, Jack -> -1
     | a, b -> compare_card a b
   ;;
 end
+
+let all_of_card = List.(min_card -- max_card) |> List.filter_map ~f:card_of_enum
 
 let card_p =
   P.choice
@@ -68,9 +70,9 @@ let hands_p = P.sep_by1 P.end_of_line hand_p
 let hand_type hand =
   let counts =
     hand
-    |> List.sort_and_group ~compare:compare_card
+    |> List.group_by ~eq:equal_card
     |> List.map ~f:List.length
-    |> List.sort ~compare:(fun a b -> -compare a b)
+    |> List.sort ~cmp:(fun a b -> -compare a b)
   in
   match counts with
   | [ 5 ] -> FiveOfAKind
@@ -85,34 +87,32 @@ let hand_type hand =
 let rec expand = function
   | [] -> [ [] ]
   | Jack :: rest ->
-    List.concat_map all_of_card ~f:(function
+    List.(min_card -- max_card)
+    |> List.filter_map ~f:card_of_enum
+    |> List.concat_map ~f:(function
       | Jack -> []
       | c -> List.map (expand rest) ~f:(List.cons c))
   | c :: rest -> List.map (expand rest) ~f:(List.cons c)
 ;;
 
 let hand_type' hand =
-  hand
-  |> expand
-  |> List.map ~f:hand_type
-  |> List.sort ~compare:compare_type'
-  |> List.hd_exn
+  hand |> expand |> List.map ~f:hand_type |> List.sort ~cmp:compare_type' |> List.hd
 ;;
 
 let solve input ~f =
   input
   |> P.parse_exn hands_p
-  |> List.sort ~compare:f
+  |> List.sort ~cmp:f
   |> List.mapi ~f:(fun i (_, s) -> (i + 1) * s)
   |> Util.List.sum_int
 ;;
 
 let part1 input =
   solve input ~f:(fun (h1, _) (h2, _) ->
-    -[%compare: type' * card list] (hand_type h1, h1) (hand_type h2, h2))
+    -[%derive.ord: type' * card list] (hand_type h1, h1) (hand_type h2, h2))
 ;;
 
 let part2 input =
   solve input ~f:(fun (h1, _) (h2, _) ->
-    -[%compare: type' * WildCard.t list] (hand_type' h1, h1) (hand_type' h2, h2))
+    -[%derive.ord: type' * WildCard.t list] (hand_type' h1, h1) (hand_type' h2, h2))
 ;;

@@ -89,7 +89,7 @@ let workflow_p =
 
 let workflows_p =
   let+ workflows = P.sep_by1 P.end_of_line workflow_p in
-  workflows |> List.map ~f:(fun w -> w.name, w) |> StrMap.of_alist_exn
+  workflows |> List.map ~f:(fun w -> w.name, w) |> StrMap.of_list
 ;;
 
 let part_p =
@@ -108,7 +108,7 @@ let input_p =
   { workflows; parts }
 ;;
 
-let init workflows = Map.find_exn workflows "in"
+let init workflows = StrMap.find "in" workflows
 
 let solve { workflows; parts } =
   let get_attr { x; m; a; s } = function
@@ -124,20 +124,22 @@ let solve { workflows; parts } =
     | _ -> None
   in
   let rec is_accepted workflow part =
-    let dest = List.find_map_exn workflow.rules ~f:(exec_rule part) in
+    let dest =
+      List.find_map workflow.rules ~f:(exec_rule part) |> Option.get_exn_or "none"
+    in
     match dest with
     | End Accept -> true
     | End Reject -> false
     | Name n ->
-      let workflow' = Map.find_exn workflows n in
+      let workflow' = StrMap.find n workflows in
       is_accepted workflow' part
   in
   parts
   |> List.filter ~f:(is_accepted (init workflows))
-  |> List.sum (module Int) ~f:(fun { x; m; a; s } -> x + m + a + s)
+  |> List.fold_left ~init:0 ~f:(fun acc { x; m; a; s } -> acc + x + m + a + s)
 ;;
 
-let solve' { workflows } =
+let solve' { workflows; _ } =
   let init_workflow = init workflows in
   let init_qpart = { x' = 1, 4000; m' = 1, 4000; a' = 1, 4000; s' = 1, 4000 } in
   let get_attr { x'; m'; a'; s' } = function
@@ -155,12 +157,12 @@ let solve' { workflows } =
   in
   let rec move_dest qpart = function
     | Name dest ->
-      let workflow' = Map.find_exn workflows dest in
+      let workflow' = StrMap.find dest workflows in
       results qpart workflow'.rules
     | End Accept -> [ qpart ]
     | End Reject -> []
   and results qpart = function
-    | Move dest :: t -> move_dest qpart dest
+    | Move dest :: _ -> move_dest qpart dest
     | LT { attr; n; dest } :: t ->
       let s, e = get_attr qpart attr in
       if s >= n
@@ -181,7 +183,8 @@ let solve' { workflows } =
   in
   let vals (s, e) = e - s + 1 in
   let totals { x'; m'; a'; s' } = vals x' * vals m' * vals a' * vals s' in
-  results init_qpart init_workflow.rules |> List.sum (module Int) ~f:totals
+  results init_qpart init_workflow.rules
+  |> List.fold_left ~init:0 ~f:(fun acc r -> acc + totals r)
 ;;
 
 let part1 input = input |> P.parse_exn input_p |> solve

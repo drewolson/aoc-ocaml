@@ -1,10 +1,6 @@
 module P = Util.Parser
 open P.Syntax
 
-module Key = struct
-  type t = char list * int list * int [@@deriving compare, sexp, hash]
-end
-
 let is_token = function
   | '.' | '#' | '?' -> true
   | _ -> false
@@ -19,9 +15,9 @@ let line_p =
 let input_p = P.sep_by1 P.end_of_line line_p
 
 let arrangements line =
-  let cache = Hashtbl.create (module Key) in
+  let cache = Hashtbl.create 1000 in
   let rec aux tokens counts count =
-    Hashtbl.find_or_add cache (tokens, counts, count) ~default:(fun _ ->
+    Hashtbl.get_or_add cache ~k:(tokens, counts, count) ~f:(fun _ ->
       match tokens, counts, count with
       | [], [], 0 -> 1
       | [], [ c ], count when c = count -> 1
@@ -39,11 +35,15 @@ let expand (tokens, counts) =
   , counts @ counts @ counts @ counts @ counts )
 ;;
 
-let part1 input = input |> P.parse_exn input_p |> List.sum (module Int) ~f:arrangements
+let part1 input =
+  input
+  |> P.parse_exn input_p
+  |> List.fold_left ~init:0 ~f:(fun acc l -> acc + arrangements l)
+;;
 
 let part2 input =
   input
   |> P.parse_exn input_p
   |> List.map ~f:expand
-  |> List.sum (module Int) ~f:arrangements
+  |> List.fold_left ~init:0 ~f:(fun acc l -> acc + arrangements l)
 ;;

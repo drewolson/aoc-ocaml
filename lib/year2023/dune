@@ -1,15 +1,16 @@
 (library
   (name year2023)
   (libraries
+    containers
+    containers-data
+    ppx_deriving
+
     angstrom
-    core
-    core_kernel.pairing_heap
     domainslib
-    ppx_jane
     pcre
     util
     zarith)
   (preprocess
-    (pps ppx_jane))
+    (pps ppx_deriving.ord ppx_deriving.eq ppx_deriving.enum))
   (flags
-    -open Core))
+    -open ContainersLabels))

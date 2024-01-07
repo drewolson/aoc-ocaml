@@ -1,26 +1,27 @@
 module Coord = struct
-  type t = int * int [@@deriving equal, compare, sexp]
+  type t = int * int [@@deriving eq, ord]
 end
 
 module IntMap = Map.Make (Int)
 module CoordMap = Map.Make (Coord)
 
-let parse input = input |> String.split_lines |> List.map ~f:String.to_list
+let parse input = input |> String.lines |> List.map ~f:String.to_list
 
 let expand amount galaxy =
   let build_counts l =
     l
     |> List.mapi ~f:(fun i line ->
       i, if List.for_all line ~f:(Char.equal '.') then amount else 1)
-    |> IntMap.of_alist_exn
+    |> IntMap.of_list
   in
-  build_counts (List.transpose_exn galaxy), build_counts galaxy
+  build_counts (Util.List.transpose galaxy), build_counts galaxy
 ;;
 
 let to_grid galaxy =
   galaxy
-  |> List.concat_mapi ~f:(fun y line -> List.mapi line ~f:(fun x c -> (x, y), c))
-  |> CoordMap.of_alist_exn
+  |> List.mapi ~f:(fun y line -> List.mapi line ~f:(fun x c -> (x, y), c))
+  |> List.concat
+  |> CoordMap.of_list
 ;;
 
 let pairs grid =
@@ -28,14 +29,22 @@ let pairs grid =
     | a :: rest -> List.map rest ~f:(fun b -> a, b) @ all_pairs rest
     | [] -> []
   in
-  grid |> Map.filter ~f:(Char.equal '#') |> Map.keys |> all_pairs
+  grid
+  |> CoordMap.filter (fun _ v -> Char.equal v '#')
+  |> CoordMap.keys
+  |> List.of_iter
+  |> all_pairs
 ;;
 
-let range a b = if a < b then List.range a b else List.range b a
+let range a b = if a < b then List.(a --^ b) else List.(b --^ a)
 
 let distance x_counts y_counts ((x1, y1), (x2, y2)) =
-  let x_dist = range x1 x2 |> List.sum (module Int) ~f:(Map.find_exn x_counts) in
-  let y_dist = range y1 y2 |> List.sum (module Int) ~f:(Map.find_exn y_counts) in
+  let x_dist =
+    range x1 x2 |> List.fold_left ~init:0 ~f:(fun acc i -> acc + IntMap.find i x_counts)
+  in
+  let y_dist =
+    range y1 y2 |> List.fold_left ~init:0 ~f:(fun acc i -> acc + IntMap.find i y_counts)
+  in
   x_dist + y_dist
 ;;
 

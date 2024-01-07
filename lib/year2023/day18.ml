@@ -44,24 +44,25 @@ let dig (x, y) command =
 ;;
 
 let shoelace points =
-  let pairs = List.zip_exn points (List.drop points 1 @ [ List.hd_exn points ]) in
+  let pairs = List.combine points (List.drop 1 points @ [ List.hd points ]) in
   let sum =
-    List.sum (module Int) pairs ~f:(fun ((x1, y1), (x2, y2)) -> (x1 * y2) - (x2 * y1))
+    List.fold_left pairs ~init:0 ~f:(fun acc ((x1, y1), (x2, y2)) ->
+      acc + (x1 * y2) - (x2 * y1))
   in
   abs (sum / 2)
 ;;
 
 let area commands =
-  let border = List.sum (module Int) commands ~f:(fun c -> c.length) in
-  let points = List.folding_map commands ~init:(0, 0) ~f:dig in
+  let border = List.fold_left commands ~init:0 ~f:(fun acc c -> acc + c.length) in
+  let points = List.fold_map commands ~init:(0, 0) ~f:dig |> snd in
   shoelace points + (border / 2) + 1
 ;;
 
 let from_hex command =
-  let length_h, dir_h = List.split_n (String.to_list command.color) 5 in
-  let length = Int.of_string ("0x" ^ String.of_list length_h) in
+  let length_h, dir_h = List.take_drop 5 (String.to_list command.color) in
+  let length = Int.of_string_exn ("0x" ^ String.of_list length_h) in
   let dir =
-    match Int.of_string ("0x" ^ String.of_list dir_h) with
+    match Int.of_string_exn ("0x" ^ String.of_list dir_h) with
     | 0 -> R
     | 1 -> D
     | 2 -> L

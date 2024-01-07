@@ -6,10 +6,10 @@ type coord =
   ; y : int
   ; z : int
   }
-[@@deriving sexp, equal, compare]
+[@@deriving eq, ord]
 
 module Brick = struct
-  type t = int * coord * coord [@@deriving sexp, equal, compare]
+  type t = int * coord * coord [@@deriving eq, ord]
 end
 
 module BrickSet = Set.Make (Brick)
@@ -44,41 +44,38 @@ let will_collide (_, a1, a2) (_, b1, b2) =
 
 let first_collision_z settled brick =
   settled
-  |> Set.to_list
+  |> BrickSet.to_list
   |> List.filter ~f:(will_collide brick)
   |> List.map ~f:(fun (_, a, b) -> max a.z b.z)
-  |> List.max_elt ~compare
-  |> Option.value ~default:0
+  |> List.fold_left ~init:0 ~f:max
 ;;
 
 let fall bricks =
   bricks
-  |> Set.to_list
-  |> List.sort ~compare:(fun (_, a1, a2) (_, b1, b2) ->
+  |> BrickSet.to_list
+  |> List.sort ~cmp:(fun (_, a1, a2) (_, b1, b2) ->
     compare (min a1.z a2.z) (min b1.z b2.z))
-  |> List.fold ~init:BrickSet.empty ~f:(fun settled (i, a, b) ->
+  |> List.fold_left ~init:BrickSet.empty ~f:(fun settled (i, a, b) ->
     let z' = first_collision_z settled (i, a, b) in
     let dz = min a.z b.z - z' in
     let brick = i, { a with z = a.z - dz + 1 }, { b with z = b.z - dz + 1 } in
-    Set.add settled brick)
+    BrickSet.add brick settled)
 ;;
 
 let count_free bricks =
   bricks
-  |> Set.filter ~f:(fun brick ->
-    let bricks' = Set.remove bricks brick in
-    Set.equal bricks' (fall bricks'))
-  |> Set.length
+  |> BrickSet.filter (fun brick ->
+    let bricks' = BrickSet.remove brick bricks in
+    BrickSet.equal bricks' (fall bricks'))
+  |> BrickSet.cardinal
 ;;
 
 let count_drops bricks =
   bricks
-  |> Set.to_list
-  |> List.sum
-       (module Int)
-       ~f:(fun brick ->
-         let bricks' = Set.remove bricks brick in
-         Set.diff (fall bricks') bricks' |> Set.length)
+  |> BrickSet.to_list
+  |> List.fold_left ~init:0 ~f:(fun acc brick ->
+    let bricks' = BrickSet.remove brick bricks in
+    acc + (BrickSet.diff (fall bricks') bricks' |> BrickSet.cardinal))
 ;;
 
 let part1 input = input |> P.parse_exn bricks_p |> fall |> count_free

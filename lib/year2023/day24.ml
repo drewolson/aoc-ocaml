@@ -28,7 +28,7 @@ let stone_p =
 
 let stones_p = P.sep_by1 P.end_of_line stone_p
 
-let to_line { x; y; dx; dy } =
+let to_line { x; y; dx; dy; _ } =
   let open Q in
   let x1 = x in
   let y1 = y in
@@ -62,9 +62,10 @@ let in_test_area target (h1, h2) =
 
 let make_matrix stones ~f =
   let m = List.map stones ~f in
-  List.take m 4
+  m
+  |> List.take 4
   |> List.map ~f:(fun d ->
-    List.zip_exn d (List.last_exn m) |> List.map ~f:(fun (a, b) -> Q.(a - b)))
+    List.combine d (m |> List.rev |> List.hd) |> List.map ~f:(fun (a, b) -> Q.(a - b)))
   |> List.map ~f:Array.of_list
   |> Array.of_list
 ;;
@@ -85,7 +86,7 @@ let elim m =
       m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))
     done
   done;
-  Array.map m ~f:(fun r -> Array.last r)
+  Array.map m ~f:(fun r -> (Array.rev r).(0))
 ;;
 
 let part1 target input =
