@@ -4,7 +4,6 @@
     angstrom
     core
     core_kernel.pairing_heap
-    domainslib
     ppx_jane
     pcre
     util
