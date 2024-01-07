@@ -22,8 +22,8 @@ let integer = digits >>| Int.of_string
 
 let signed_integer =
   let open Syntax in
-  let%map sign = 1 <$ char '+' <|> (-1 <$ char '-') <|> return 1
-  and n = integer in
+  let+ sign = 1 <$ char '+' <|> (-1 <$ char '-') <|> return 1
+  and+ n = integer in
   sign * n
 ;;
 
