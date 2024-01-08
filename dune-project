@@ -21,6 +21,8 @@
     ocaml
     ocaml-lsp-server
     ocamlformat
+    odig
+    odoc
     utop
 
     angstrom
@@ -30,4 +32,5 @@
     core_unix
     pcre
     ppx_jane
+    z3
     zarith))

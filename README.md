@@ -1,17 +1,5 @@
 # Advent of Code in OCaml
 
-## Install Dependencies
-
-```
-opam install . --deps-only
-```
-
-## Lock Dependencies
-
-```
-opam lock . --direct-only
-```
-
 ## Run
 
 ```
@@ -36,4 +24,16 @@ dune test
 
 ```
 opam switch create ./ ocaml-base-compiler.5.1.1 --deps-only
+```
+
+## Install New Dependencies
+
+```
+opam install . --deps-only
+```
+
+## Lock New Dependencies
+
+```
+opam lock . --direct-only
 ```

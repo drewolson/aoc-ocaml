@@ -1,3 +1,6 @@
+module A = Z3.Arithmetic
+module B = Z3.Boolean
+module I = Z3.Arithmetic.Integer
 module P = Util.Parser
 open P.Syntax
 
@@ -28,17 +31,13 @@ let stone_p =
 
 let stones_p = P.sep_by1 P.end_of_line stone_p
 
-let to_line { x; y; dx; dy } =
-  let open Q in
-  let x1 = x in
-  let y1 = y in
-  let x2 = x1 + dx in
-  let y2 = y1 + dy in
-  { a = y1 - y2; b = x2 - x1; c = ~-((x1 * y2) - (x2 * y1)) }
-;;
-
 let in_test_area target (h1, h2) =
   let open Q in
+  let to_line { x; y; dx; dy } =
+    let x' = x + dx in
+    let y' = y + dy in
+    { a = y - y'; b = x' - x; c = ~-((x * y') - (x' * y)) }
+  in
   let in_range (a, b) v = a <= v && v <= b in
   let sign f = ~$(compare f ~$0) in
   let in_future h1 h2 x y =
@@ -60,32 +59,61 @@ let in_test_area target (h1, h2) =
     in_range target x && in_range target y && in_future h1 h2 x y)
 ;;
 
-let make_matrix stones ~f =
-  let m = List.map stones ~f in
-  List.take m 4
-  |> List.map ~f:(fun d ->
-    List.zip_exn d (List.last_exn m) |> List.map ~f:(fun (a, b) -> Q.(a - b)))
-  |> List.map ~f:Array.of_list
-  |> Array.of_list
-;;
-
-let elim m =
-  let l = Array.length m in
-  for i = 0 to l - 1 do
-    let t = m.(i).(i) in
-    m.(i) <- Array.map m.(i) ~f:(fun x -> Q.(x / t));
-    for j = i + 1 to l - 1 do
-      let t = m.(j).(i) in
-      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))
-    done
-  done;
-  for i = l - 1 downto 0 do
-    for j = 0 to i - 1 do
-      let t = m.(j).(i) in
-      m.(j) <- Array.mapi m.(j) ~f:(fun k x -> Q.(x - (t * m.(i).(k))))
-    done
-  done;
-  Array.map m ~f:(fun r -> Array.last r)
+let solve_system stones =
+  let check_sat_exn s =
+    match Z3.Solver.check s [] with
+    | UNKNOWN -> failwith "UNKNOWN"
+    | UNSATISFIABLE -> failwith "UNSATISFIABLE"
+    | SATISFIABLE -> ()
+  in
+  let get_model_exn s =
+    check_sat_exn s;
+    s |> Z3.Solver.get_model |> Option.value_exn
+  in
+  let ctx = Z3.mk_context [ "model", "true"; "proof", "false" ] in
+  let zero = I.mk_numeral_i ctx 0 in
+  let x = I.mk_const_s ctx "x" in
+  let y = I.mk_const_s ctx "y" in
+  let z = I.mk_const_s ctx "z" in
+  let dx = I.mk_const_s ctx "dx" in
+  let dy = I.mk_const_s ctx "dy" in
+  let dz = I.mk_const_s ctx "dz" in
+  let s = Z3.Solver.mk_simple_solver ctx in
+  stones
+  |> Util.List.take ~n:3
+  |> List.iteri ~f:(fun i h ->
+    let t = I.mk_const_s ctx (Printf.sprintf "t%i" i) in
+    Z3.Solver.add
+      s
+      [ A.mk_gt ctx t zero
+      ; B.mk_eq
+          ctx
+          (A.mk_add ctx [ x; A.mk_mul ctx [ dx; t ] ])
+          (A.mk_add
+             ctx
+             [ I.mk_numeral_i ctx (Q.to_int h.x)
+             ; A.mk_mul ctx [ I.mk_numeral_i ctx (Q.to_int h.dx); t ]
+             ])
+      ; B.mk_eq
+          ctx
+          (A.mk_add ctx [ y; A.mk_mul ctx [ dy; t ] ])
+          (A.mk_add
+             ctx
+             [ I.mk_numeral_i ctx (Q.to_int h.y)
+             ; A.mk_mul ctx [ I.mk_numeral_i ctx (Q.to_int h.dy); t ]
+             ])
+      ; B.mk_eq
+          ctx
+          (A.mk_add ctx [ z; A.mk_mul ctx [ dz; t ] ])
+          (A.mk_add
+             ctx
+             [ I.mk_numeral_i ctx (Q.to_int h.z)
+             ; A.mk_mul ctx [ I.mk_numeral_i ctx (Q.to_int h.dz); t ]
+             ])
+      ]);
+  let m = get_model_exn s in
+  let result = A.mk_add ctx [ x; y; z ] in
+  Z3.Model.eval m result false |> Option.value_exn |> Z3.Expr.to_string |> Int.of_string
 ;;
 
 let part1 target input =
@@ -96,19 +124,4 @@ let part1 target input =
   |> List.length
 ;;
 
-(* all credit to https://github.com/tckmn/polyaoc-2023/blob/97689dc6b5ff38c557cd885b10be425e14928958/24/rb/24.rb#L22 *)
-let part2 input =
-  let open Q in
-  let stones = P.parse_exn stones_p input in
-  let a =
-    make_matrix stones ~f:(fun h ->
-      [ ~-(h.dy); h.dx; h.y; ~-(h.x); (h.y * h.dx) - (h.x * h.dy) ])
-  in
-  let b =
-    make_matrix stones ~f:(fun h ->
-      [ ~-(h.dy); h.dz; h.y; ~-(h.z); (h.y * h.dz) - (h.z * h.dy) ])
-  in
-  let r1 = elim a in
-  let r2 = elim b in
-  r1.(0) + r1.(1) + r2.(0) |> Q.to_int
-;;
+let part2 input = input |> P.parse_exn stones_p |> solve_system
