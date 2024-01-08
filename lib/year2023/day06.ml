@@ -13,7 +13,7 @@ let data_p p =
 ;;
 
 let races_p =
-  let%map times, distances = data_p P.integer in
+  let+ times, distances = data_p P.integer in
   [ times; distances ]
   |> List.transpose_exn
   |> List.filter_map ~f:(function
