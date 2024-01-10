@@ -1,0 +1,15 @@
+(library
+  (name year2019)
+  (libraries
+    angstrom
+    core
+    core_kernel.pairing_heap
+    ppx_jane
+    pcre
+    util
+    z3
+    zarith)
+  (preprocess
+    (pps ppx_jane))
+  (flags
+    -open Core))

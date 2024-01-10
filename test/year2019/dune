@@ -1,11 +1,10 @@
 (library
-  (name runner)
+  (name year2019_test)
   (libraries
     core
-    core_bench
-    year2019
-    year2022
-    year2023)
+    ppx_jane
+    year2019)
+  (inline_tests)
   (preprocess
     (pps ppx_jane))
   (flags

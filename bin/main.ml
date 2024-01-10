@@ -7,13 +7,13 @@ end
 
 module IntSet = Set.Make (Int)
 
-let years = IntSet.of_list [ 2022; 2023 ]
+let years = IntSet.of_list [ 2019; 2022; 2023 ]
 
 let year_arg =
   Command.Arg_type.create (fun year_str ->
     match Int.of_string_opt year_str with
     | Some year when Set.mem years year -> year
-    | _ -> failwith "Year must be in [2022, 2023]")
+    | _ -> failwith "Year must be in [2019, 2022, 2023]")
 ;;
 
 let day_arg =
