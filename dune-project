@@ -1,4 +1,4 @@
-(lang dune 3.10)
+(lang dune 3.14)
 
 (name aoc)
 

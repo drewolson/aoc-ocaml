@@ -7,7 +7,7 @@ license: "MIT"
 homepage: "https://github.com/drewolson/aoc-ocaml"
 bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
-  "dune" {>= "3.10"}
+  "dune" {>= "3.14"}
   "ocaml"
   "ocaml-lsp-server"
   "ocamlformat"
