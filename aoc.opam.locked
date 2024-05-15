@@ -13,16 +13,16 @@ depends: [
   "core_bench" {= "v0.16.0"}
   "core_kernel" {= "v0.16.0"}
   "core_unix" {= "v0.16.0"}
-  "dune" {= "3.14.0"}
-  "ocaml" {= "5.1.1"}
-  "ocaml-lsp-server" {= "1.17.0"}
-  "ocamlformat" {= "0.26.1"}
+  "dune" {= "3.15.2"}
+  "ocaml" {= "5.2.0"}
+  "ocaml-lsp-server" {= "1.18.0~5.2preview"}
+  "ocamlformat" {= "0.26.2"}
   "odig" {= "0.0.9"}
-  "odoc" {= "2.4.1"}
+  "odoc" {= "2.4.2"}
   "pcre" {= "7.5.0"}
   "ppx_jane" {= "v0.16.0"}
   "utop" {= "2.14.0"}
-  "z3" {= "4.12.6"}
+  "z3" {= "4.13.0"}
   "zarith" {= "1.13"}
 ]
 build: [
