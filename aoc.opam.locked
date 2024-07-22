@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "aoc"
-version: "~dev"
+version: "dev"
 synopsis: "Advent of Code in Ocaml"
 maintainer: "Drew Olson"
 authors: "Drew Olson"
@@ -9,21 +9,21 @@ homepage: "https://github.com/drewolson/aoc-ocaml"
 bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
   "angstrom" {= "0.16.0"}
-  "core" {= "v0.16.2"}
-  "core_bench" {= "v0.16.0"}
-  "core_kernel" {= "v0.16.0"}
-  "core_unix" {= "v0.16.0"}
-  "dune" {= "3.15.2"}
+  "core" {= "v0.17.1"}
+  "core_bench" {= "v0.17.0"}
+  "core_kernel" {= "v0.17.0"}
+  "core_unix" {= "v0.17.0"}
+  "dune" {= "3.16.0"}
   "ocaml" {= "5.2.0"}
   "ocaml-lsp-server" {= "1.18.0~5.2preview"}
   "ocamlformat" {= "0.26.2"}
   "odig" {= "0.0.9"}
   "odoc" {= "2.4.2"}
   "pcre" {= "7.5.0"}
-  "ppx_jane" {= "v0.16.0"}
+  "ppx_jane" {= "v0.17.0"}
   "utop" {= "2.14.0"}
-  "z3" {= "4.13.0"}
-  "zarith" {= "1.13"}
+  "z3" {= "4.13.0-3"}
+  "zarith" {= "1.14"}
 ]
 build: [
   ["dune" "subst"] {dev}

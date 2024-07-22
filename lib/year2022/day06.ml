@@ -1,6 +1,6 @@
 module CharSet = Set.Make (Char)
 
-let is_unique l = List.equal Char.equal (CharSet.stable_dedup_list l) l
+let is_unique l = List.stable_dedup ~compare:Char.compare l |> List.equal Char.equal l
 
 let find_char i =
   let rec find_char' n l =
