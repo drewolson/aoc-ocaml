@@ -8,7 +8,7 @@ license: "MIT"
 homepage: "https://github.com/drewolson/aoc-ocaml"
 bug-reports: "https://github.com/drewolson/aoc-ocaml/issues"
 depends: [
-  "angstrom" {= "0.16.0"}
+  "angstrom" {= "0.16.1"}
   "core" {= "v0.17.1"}
   "core_bench" {= "v0.17.0"}
   "core_kernel" {= "v0.17.0"}
@@ -18,11 +18,11 @@ depends: [
   "ocaml-lsp-server" {= "1.19.0"}
   "ocamlformat" {= "0.26.2"}
   "odig" {= "0.0.9"}
-  "odoc" {= "2.4.2"}
+  "odoc" {= "2.4.3"}
   "pcre" {= "7.5.0"}
   "ppx_jane" {= "v0.17.0"}
   "utop" {= "2.14.0"}
-  "z3" {= "4.13.0-3"}
+  "z3" {= "4.13.3"}
   "zarith" {= "1.14"}
 ]
 build: [
