@@ -13,15 +13,15 @@ depends: [
   "core_bench" {= "v0.17.0"}
   "core_kernel" {= "v0.17.0"}
   "core_unix" {= "v0.17.0"}
-  "dune" {= "3.16.0"}
-  "ocaml" {= "5.2.0"}
+  "dune" {= "3.16.1"}
+  "ocaml" {= "5.2.1"}
   "ocaml-lsp-server" {= "1.19.0"}
   "ocamlformat" {= "0.26.2"}
   "odig" {= "0.0.9"}
   "odoc" {= "2.4.3"}
   "pcre" {= "7.5.0"}
   "ppx_jane" {= "v0.17.0"}
-  "utop" {= "2.14.0"}
+  "utop" {= "2.15.0"}
   "z3" {= "4.13.3"}
   "zarith" {= "1.14"}
 ]

@@ -31,7 +31,8 @@ let part_arg =
 ;;
 
 let run_command =
-  let open Syntax in
+  let open Command.Param in
+  let open Letops.Command in
   let+ year =
     flag
       "year"

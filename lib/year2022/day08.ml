@@ -16,7 +16,7 @@ let grid_size grid =
 ;;
 
 let coords grid =
-  let open Util.List.Syntax in
+  let open Letops.List in
   let max_x, max_y = grid_size grid in
   let* x = List.range 0 max_x in
   let+ y = List.range 0 max_y in

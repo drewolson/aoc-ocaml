@@ -4,6 +4,7 @@
   (libraries
     core
     core_unix.command_unix
+    letops
     runner)
   (preprocess
     (pps ppx_jane))

@@ -23,7 +23,7 @@ dune test
 ## Create Local Switch
 
 ```
-opam switch create ./ ocaml-base-compiler.5.2.0 --deps-only --locked
+opam switch create ./ ocaml-base-compiler.5.2.1 --deps-only --locked
 ```
 
 ## Install New Dependencies

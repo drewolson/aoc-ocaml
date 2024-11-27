@@ -1,13 +1,8 @@
 (library
-  (name year2022)
+  (name letops)
   (libraries
-    angstrom
     core
-    letops
-    ppx_jane
-    pcre
-    util
-    zarith)
+    ppx_jane)
   (preprocess
     (pps ppx_jane))
   (flags
