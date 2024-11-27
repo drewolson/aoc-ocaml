@@ -1,10 +1,3 @@
-module Syntax = struct
-  include Command.Param
-
-  let ( let+ ) = Command.Let_syntax.( >>| )
-  let ( and+ ) = Command.Let_syntax.Let_syntax.both
-end
-
 module IntSet = Set.Make (Int)
 
 let years = IntSet.of_list [ 2019; 2022; 2023 ]
