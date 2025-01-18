@@ -2,7 +2,6 @@
   (name runner)
   (libraries
     core
-    core_bench
     year2019
     year2022
     year2023)

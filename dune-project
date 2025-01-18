@@ -26,10 +26,9 @@
     utop
 
     angstrom
+    cmdliner
     core
-    core_bench
     core_kernel
-    core_unix
     pcre
     ppx_jane
     z3

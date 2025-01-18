@@ -2,8 +2,8 @@
   (public_name aoc)
   (name main)
   (libraries
+    cmdliner
     core
-    core_unix.command_unix
     letops
     runner)
   (preprocess

@@ -4,7 +4,7 @@
 
 ```
 dune exec aoc -- -help
-dune exec aoc -- -day 1 -part 1
+dune exec aoc -- --day 1 --part 1
 dune exec aoc -- -d 1 -p 1
 ```
 
@@ -23,13 +23,13 @@ dune test
 ## Create Local Switch
 
 ```
-opam switch create ./ ocaml-base-compiler.5.2.1 --deps-only --locked
+opam switch create ./ ocaml-base-compiler.5.3.0 --deps-only --locked
 ```
 
 ## Install New Dependencies
 
 ```
-opam install . --deps-only --locked
+opam install . --deps-only
 ```
 
 ## Lock New Dependencies
