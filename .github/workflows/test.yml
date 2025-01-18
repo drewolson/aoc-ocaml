@@ -5,12 +5,12 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: 5.3
-    - run: opam install . --deps-only --with-test --locked --no-depexts
+    - run: opam install . --deps-only --with-test --locked
     - run: opam exec -- dune build
     - run: opam exec -- dune test
