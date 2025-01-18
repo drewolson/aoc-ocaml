@@ -11,6 +11,6 @@ jobs:
     - uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: 5.3
-    - run: opam install . --deps-only --with-test --locked
+    - run: opam install . --deps-only --with-test --locked --no-depexts
     - run: opam exec -- dune build
     - run: opam exec -- dune test
